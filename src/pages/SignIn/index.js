@@ -10,7 +10,7 @@ import Footer from '../../components/Footer'
 class SignIn extends Component {
   render() {
     return (
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Header title="Sign In" />
           <View style={styles.form}>
@@ -18,7 +18,7 @@ class SignIn extends Component {
             <View style={styles.gap} />
             <InputPassword label="Password" placeholder="Write your password" />
           </View>
-          <Button text="Sign In" />
+          <Button text="Sign In" onPress={() => this.props.navigation.navigate('Home')} />
           <Footer title="Forgot your password?" textLink="Reset now" onPress={() => this.props.navigation.navigate('ForgotPassword')} />
         </View>
       </ScrollView>
@@ -29,7 +29,8 @@ class SignIn extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    paddingVertical: 40
+    paddingVertical: 40,
+    backgroundColor: 'white'
   },
   form: {
     marginVertical: 40

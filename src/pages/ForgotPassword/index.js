@@ -8,7 +8,7 @@ import InputText from '../../components/Form/InputText'
 class ForgotPassword extends Component {
   render() {
     return (
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Header title="Forgot Password" subTitle="we'll send a link to your email shortly" />
           <View style={styles.form}>
@@ -24,7 +24,8 @@ class ForgotPassword extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    paddingVertical: 40
+    paddingVertical: 40,
+    backgroundColor: 'white'
   },
   form: {
     marginVertical: 40

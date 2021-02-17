@@ -5,6 +5,7 @@ import SplashScreen from '../pages/SplashScreen'
 import SignUp from '../pages/SignUp'
 import SignIn from '../pages/SignIn'
 import ForgotPassword from '../pages/ForgotPassword'
+import Home from '../pages/Home'
 
 const Stack = createStackNavigator()
 
@@ -15,6 +16,7 @@ const Router = () => {
       <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}} />
       <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false}} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword}  options={{headerShown: false}} />
+      <Stack.Screen name="Home" component={Home}  options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }

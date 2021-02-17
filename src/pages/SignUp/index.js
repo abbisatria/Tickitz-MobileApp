@@ -10,7 +10,7 @@ import Footer from '../../components/Footer'
 class SignUp extends Component {
   render() {
     return (
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Header title="Sign Up" />
           <View style={styles.form}>
@@ -29,7 +29,8 @@ class SignUp extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    paddingVertical: 40
+    paddingVertical: 40,
+    backgroundColor: 'white'
   },
   form: {
     marginVertical: 40
