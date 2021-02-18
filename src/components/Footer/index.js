@@ -11,10 +11,10 @@ const Footer = ({title, textLink, onPress}) => {
         <Text style={styles.textTitle}>{title} </Text>
         <TouchableOpacity onPress={onPress}><Text style={styles.link}>{textLink}</Text></TouchableOpacity>
       </View>
-      <View style={{marginVertical: 40, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-        <View style={{flex: 1, borderBottomWidth: 1, borderBottomColor: '#DEDEDE'}} />
-        <Text style={{marginHorizontal: 40, color: '#AAAAAA'}}>Or</Text>
-        <View style={{flex: 1, borderBottomWidth: 1, borderBottomColor: '#DEDEDE'}} />
+      <View style={styles.or}>
+        <View style={styles.lineLeft} />
+        <Text style={styles.textOr}>Or</Text>
+        <View style={styles.lineRight} />
       </View>
       <View style={styles.row}>
         <View style={[styles.card, styles.cardRight]}>
@@ -60,5 +60,25 @@ const styles = StyleSheet.create({
   },
   cardRight: {
     marginRight: 32
+  },
+  or: {
+    marginVertical: 40, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center'
+  },
+  lineLeft: {
+    flex: 1, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#DEDEDE'
+  },
+  textOr: {
+    marginHorizontal: 40, 
+    color: '#AAAAAA'
+  },
+  lineRight: {
+    flex: 1, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#DEDEDE'
   }
 })

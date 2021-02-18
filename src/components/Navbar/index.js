@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import Logo from '../../assets/images/logo.svg'
 import Menu from '../../assets/icons/ic-menu.svg'
@@ -20,6 +20,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 33
+    paddingHorizontal: 24,
+    paddingVertical: 15,
+    elevation: 1,
+    backgroundColor: 'white'
   }
 })

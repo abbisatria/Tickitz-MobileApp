@@ -3,7 +3,6 @@ import { Text, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-nati
 
 import InputText from '../../components/Form/InputText'
 import Button from '../../components/Button'
-import Navbar from '../../components/Navbar'
 import FooterHome from '../../components/FooterHome'
 import Hero from '../../components/Hero'
 import NowShowing from '../../components/NowShowing'
@@ -28,7 +27,6 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Navbar />
           <Hero />
           <View>
             <View style={styles.row}>
