@@ -36,9 +36,9 @@ export default class Home extends Component {
               <Text style={styles.showLink}>view all</Text>
             </View>
             <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {[...Array(10)].map((value) => {
+              {[...Array(10)].map((value, index) => {
                 return (
-                  <NowShowing key={String(value)} />
+                  <NowShowing key={String(value, index)} onPress={() => this.props.navigation.navigate('Details')} />
                 )
               })}
             </ScrollView>
@@ -60,9 +60,9 @@ export default class Home extends Component {
               })}
             </ScrollView>
             <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {[...Array(10)].map((value) => {
+              {[...Array(10)].map((value, index) => {
                 return (
-                  <UpComing key={String(value)} />
+                  <UpComing key={String(index)} onPress={() => this.props.navigation.navigate('Details')} />
                 )
               })}
             </ScrollView>

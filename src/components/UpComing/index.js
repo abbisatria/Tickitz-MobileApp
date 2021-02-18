@@ -10,7 +10,7 @@ export default class UpComing extends Component {
         <Image source={nowShowing1} style={styles.imageNowShowing} />
         <Text style={styles.title}>Black Widow</Text>
         <Text style={styles.text}>Action, Adventure, Sci-Fi</Text>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity activeOpacity={0.7} onPress={this.props.onPress}>
           <View style={styles.button}>
             <Text style={styles.textButton}>Details</Text>
           </View>
