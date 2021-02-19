@@ -55,9 +55,9 @@ export default class MovieDetail extends Component {
             <View style={{height: 12}} />
             <Select icon={<Location />} data={['Jakarta', 'Karawang']} label="Set a city" />
           </View>
-          <Showtime />
-          <Showtime />
-          <Showtime />
+          <Showtime onPress={() => this.props.navigation.navigate('Order')} />
+          <Showtime onPress={() => this.props.navigation.navigate('Order')} />
+          <Showtime onPress={() => this.props.navigation.navigate('Order')} />
           <View style={styles.viewMore}>
             <View style={styles.lineLeft} />
               <TouchableOpacity>

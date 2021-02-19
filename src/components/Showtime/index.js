@@ -33,7 +33,7 @@ export default class Showtime extends Component {
           <Text style={styles.seat}>$10.00/seat</Text>
         </View>
         <View style={styles.rowBook}>
-          <Button text="Book Now" padding={15} />
+          <Button text="Book Now" padding={15} onPress={this.props.onPress} />
           <Button text="Add to cart" padding={15} color="white" textColor="#5F2EEA" />
         </View>
       </View>
