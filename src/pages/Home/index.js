@@ -8,6 +8,8 @@ import Hero from '../../components/Hero'
 import NowShowing from '../../components/NowShowing'
 import UpComing from '../../components/UpComing'
 
+import http from '../../helpers/http'
+
 export default class Home extends Component {
   state = {
     month: [
@@ -21,9 +23,21 @@ export default class Home extends Component {
       "April",
       "May",
       "June",
-    ]
+    ],
+    nowShowingList: []
+  }
+  async componentDidMount(){
+    try {
+      const response = await http().get('movies/movieNowShowing')
+      this.setState({
+        nowShowingList: response.data.results
+      })
+    } catch(err) {
+      console.log(err)
+    }
   }
   render() {
+    console.log(this.state.nowShowingList)
     return (
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -34,9 +48,11 @@ export default class Home extends Component {
               <Text style={styles.showLink}>view all</Text>
             </View>
             <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {[...Array(10)].map((value, index) => {
+              {this.state.nowShowingList.map((value, index) => {
                 return (
-                  <NowShowing key={String(value, index)} onPress={() => this.props.navigation.navigate('Details')} />
+                  <View key={String(index)}>
+                    <NowShowing data={value} onPress={() => this.props.navigation.navigate('Details')} />
+                  </View>
                 )
               })}
             </ScrollView>

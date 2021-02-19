@@ -30,7 +30,7 @@ export default class Order extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.cardChooseSeat}>
             <Text style={styles.textChooseSeat}>Choose Your Seat</Text>
             <View style={styles.cardSeat}>
