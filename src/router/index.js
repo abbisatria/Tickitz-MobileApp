@@ -8,6 +8,8 @@ import ForgotPassword from '../pages/ForgotPassword'
 import Home from '../pages/Home'
 import MovieDetail from '../pages/MovieDetail'
 import Order from '../pages/Order'
+import Payment from '../pages/Payment'
+import Ticket from '../pages/Ticket'
 import Navbar from '../components/Navbar'
 
 const Stack = createStackNavigator()
@@ -22,6 +24,8 @@ const Router = () => {
       <Stack.Screen name="Home" component={Home} options={{header: () => <Navbar />}} />
       <Stack.Screen name="Details" component={MovieDetail} options={{header: () => <Navbar />}} />
       <Stack.Screen name="Order" component={Order} options={{header: () => <Navbar />}} />
+      <Stack.Screen name="Payment" component={Payment} options={{header: () => <Navbar />}} />
+      <Stack.Screen name="Ticket" component={Ticket} options={{header: () => <Navbar />}} />
     </Stack.Navigator>
   )
 }

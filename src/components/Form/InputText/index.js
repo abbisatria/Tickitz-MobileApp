@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 
-const InputText = ({label, placeholder}) => {
+const InputText = ({label, placeholder, value, paddingHorizontal = 22,  paddingVertical= 20}) => {
   return (
     <View>
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} placeholder={placeholder} />
+      <TextInput style={styles.input(paddingHorizontal, paddingVertical)} placeholder={placeholder} value={value} />
     </View>
   )
 }
@@ -19,13 +19,13 @@ const styles = StyleSheet.create({
     color: '#4E4B66',
     marginBottom: 12
   },
-  input: {
+  input: (paddingHorizontal, paddingVertical) => ({
     borderWidth: 1,
     borderColor: '#DEDEDE',
     borderRadius: 12,
-    paddingHorizontal: 22,
-    paddingVertical: 20,
+    paddingHorizontal: paddingHorizontal,
+    paddingVertical: paddingVertical,
     fontSize: 16,
     fontFamily: 'Mulish-Regular'
-  }
+  })
 })

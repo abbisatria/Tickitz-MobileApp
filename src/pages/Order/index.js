@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 
 import Button from '../../components/Button'
 import Seat from '../../components/Seat'
-import { color } from 'react-native-reanimated'
 
 export default class Order extends Component {
   state = {
@@ -95,7 +94,7 @@ export default class Order extends Component {
               <Text>Choosed</Text>
               <Text>{this.state.seat.join(', ')}</Text>
             </View>
-            <Button text="Checkout now" />
+            <Button text="Checkout now" onPress={() => this.props.navigation.navigate('Payment')} />
           </View>
           <View style={styles.containerFooter}>
             <FooterHome />
