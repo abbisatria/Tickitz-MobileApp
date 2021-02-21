@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native'
+import { connect } from 'react-redux'
+import { nowShowing, upComing, detailMovie } from '../../redux/actions/movie'
 
 import InputText from '../../components/Form/InputText'
 import Button from '../../components/Button'
@@ -8,9 +10,7 @@ import Hero from '../../components/Hero'
 import NowShowing from '../../components/NowShowing'
 import UpComing from '../../components/UpComing'
 
-import http from '../../helpers/http'
-
-export default class Home extends Component {
+class Home extends Component {
   state = {
     month: [
       "September",
@@ -27,17 +27,14 @@ export default class Home extends Component {
     nowShowingList: []
   }
   async componentDidMount(){
-    try {
-      const response = await http().get('movies/movieNowShowing')
-      this.setState({
-        nowShowingList: response.data.results
-      })
-    } catch(err) {
-      console.log(err)
-    }
+    await this.props.nowShowing()
+    await this.props.upComing()
+  }
+  detailMovie = async (id) => {
+    await this.props.detailMovie(id)
+    this.props.navigation.navigate('Details')
   }
   render() {
-    console.log(this.state.nowShowingList)
     return (
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -48,10 +45,10 @@ export default class Home extends Component {
               <Text style={styles.showLink}>view all</Text>
             </View>
             <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {this.state.nowShowingList.map((value, index) => {
+              {this.props.movie.nowShowing && this.props.movie.nowShowing.map((value, index) => {
                 return (
                   <View key={String(index)}>
-                    <NowShowing data={value} onPress={() => this.props.navigation.navigate('Details')} />
+                    <NowShowing data={value} onPress={() => this.detailMovie(value.id)} />
                   </View>
                 )
               })}
@@ -74,9 +71,11 @@ export default class Home extends Component {
               })}
             </ScrollView>
             <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {[...Array(10)].map((value, index) => {
+              {this.props.movie.upComing && this.props.movie.upComing.map((value, index) => {
                 return (
-                  <UpComing key={String(index)} onPress={() => this.props.navigation.navigate('Details')} />
+                  <View key={String(index)}>
+                    <UpComing data={value} onPress={() => this.detailMovie(value.id)} />
+                  </View>
                 )
               })}
             </ScrollView>
@@ -163,3 +162,11 @@ const styles = StyleSheet.create({
     marginTop: 32
   }
 })
+
+const mapStateToProps = state => ({
+  movie: state.movie
+})
+
+const mapDispatchToProps = { nowShowing, upComing, detailMovie }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

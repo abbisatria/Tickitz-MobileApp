@@ -18,6 +18,17 @@ const showtimeReducer = (state = initialState, action) => {
         location: action.payload
       }
     }
+    case 'SET_SHOWTIME_MESSAGE': {
+      return {
+        ...state,
+        errorMsg: action.payload
+      }
+    }
+    default: {
+      return {
+        ...state
+      }
+    }
   }
 }
 

@@ -3,18 +3,13 @@ import { StyleSheet, View } from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 
 export default class Select extends Component {
-  state = {
-    value: ''
-  }
   render() {
     return (
       <View style={styles.input}>
         {this.props.icon && this.props.icon}
         <Picker
-          selectedValue={this.state.value}
-          onValueChange={(itemValue, itemIndex) =>
-            this.setState({value: itemValue})
-          }
+          selectedValue={this.props.value}
+          onValueChange={this.props.onChange}
           style={styles.select}
           >
           {this.props.label && (<Picker.Item label={this.props.label} />)}

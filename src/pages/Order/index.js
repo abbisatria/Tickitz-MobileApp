@@ -1,18 +1,21 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import FooterHome from '../../components/FooterHome'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
+import { connect } from 'react-redux'
+import { seatChecked } from '../../redux/actions/order'
+
 import Button from '../../components/Button'
 import Seat from '../../components/Seat'
 
-export default class Order extends Component {
+class Order extends Component {
   state = {
     alfabet: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
     seatNumber: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
-    soldSeat: ['A1', 'A2'],
-    seat: []
+    seat: [],
+    loading: false
   }
   selectSeat = (id) => {
     const { seat } = this.state
@@ -26,6 +29,12 @@ export default class Order extends Component {
     this.setState({
       seat: newArray
     })
+  }
+  checkOut = () => {
+    this.setState({loading: true})
+    this.props.seatChecked(this.state.seat)
+    this.setState({loading: false})
+    this.props.navigation.navigate('Payment')
   }
   render() {
     return (
@@ -43,10 +52,10 @@ export default class Order extends Component {
                       return (
                         <React.Fragment key={indexSeat}>
                           {(`${item}${value}` === 'F11') 
-                          ? (this.state.soldSeat.some(sold => sold === 'F11, F12') 
+                          ? (this.props.order.seatSold.some(sold => sold.name === 'F11, F12') 
                           ? (<Seat seatLoveSold />) 
                           : (<TouchableOpacity onPress={() => this.selectSeat('F11, F12')}><Seat seatLove selected={this.state.seat.includes('F11, F12')}/></TouchableOpacity>)) 
-                          : (`${item}${value}` === 'F12') ? null : (this.state.soldSeat.some(sold => sold === `${item}${value}`) ? (<Seat seatSold />)
+                          : (`${item}${value}` === 'F12') ? null : (this.props.order.seatSold.some(sold => sold.name === `${item}${value}`) ? (<Seat seatSold />)
                           : (<TouchableOpacity onPress={() => this.selectSeat(`${item}${value}`)}><Seat seat selected={this.state.seat.includes(`${item}${value}`)} /></TouchableOpacity>))}
                           {`${item}${value}` === `${item}7` ? <View style={styles.gap} /> : null}
                         </React.Fragment>
@@ -94,7 +103,7 @@ export default class Order extends Component {
               <Text>Choosed</Text>
               <Text>{this.state.seat.join(', ')}</Text>
             </View>
-            <Button text="Checkout now" onPress={() => this.props.navigation.navigate('Payment')} />
+            {this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : <Button text="Checkout now" onPress={() => this.checkOut()} />}
           </View>
           <View style={styles.containerFooter}>
             <FooterHome />
@@ -211,3 +220,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24
   }
 })
+
+const mapStateToProps = state => ({
+  order: state.order
+})
+
+const mapDispatchToProps = { seatChecked }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Order)

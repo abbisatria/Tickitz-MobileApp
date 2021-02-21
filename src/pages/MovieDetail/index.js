@@ -1,63 +1,110 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Image, TextInput } from 'react-native'
+import { Text, StyleSheet, View, Image, ActivityIndicator } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { connect } from 'react-redux'
+import {REACT_APP_API_URL as API_URL} from '@env'
+import { showtimeMovie } from '../../redux/actions/showtime'
+import { order } from '../../redux/actions/order'
+import moment from 'moment'
 
 import FooterHome from '../../components/FooterHome'
 import Showtime from '../../components/Showtime'
 import Select from '../../components/Form/Select'
 
-import nowShowing from '../../assets/images/nowShowing1.png'
 import Calendar from '../../assets/icons/ic-calendar.svg'
 import Location from '../../assets/icons/ic-location.svg'
 
-export default class MovieDetail extends Component {
+class MovieDetail extends Component {
+  state = {
+    date: '',
+    idMovie: this.props.movie.detailMovie.id,
+    location: '',
+    showtime: null,
+    loading: false
+  }
+
+  changeLocation = (value) => {
+    this.setState({location: value, loading: true}, async () => {
+      if(this.state.date !== '' && this.state.location !== '') {
+        const { date, location, idMovie} = this.state
+        await this.props.showtimeMovie(date, location, idMovie)
+        this.setState({loading: false, showtime: this.props.showtime.results})
+      }
+    })
+  }
+
+  changeDate = (value) => {
+    this.setState({date: value, loading: true}, async () => {
+      if(this.state.date !== '' && this.state.location !== '') {
+        const { date, location, idMovie} = this.state
+        await this.props.showtimeMovie(date, location, idMovie)
+        this.setState({loading: false})
+      }
+    })
+  }
+
+  bookNow = async (showtimesId) => {
+    this.setState({loading: true})
+    await this.props.order(showtimesId)
+    this.setState({loading: false})
+    this.props.navigation.navigate('Order')
+  }
   render() {
+    console.log(this.props.showtime)
     return (
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.row}>
             <View style={styles.cardMovie}>
-              <Image source={nowShowing} style={styles.imageMovie} />
+              <Image source={{uri: `${API_URL}uploads/movies/${this.props.movie.detailMovie.image}`}} style={styles.imageMovie} />
             </View>
-            <Text style={styles.title}>Spider-Man: Homecoming</Text>
-            <Text style={styles.subTitle}>Adventure, Action, Sci-Fi</Text>
+            <Text style={styles.title}>{this.props.movie.detailMovie.name}</Text>
+            <Text style={styles.subTitle}>{this.props.movie.detailMovie.genre}</Text>
           </View>
           <View>
             <View style={styles.rowDetail}>
               <View style={styles.colRight}>
                 <Text style={styles.text}>Release date</Text>
-                <Text style={styles.name}>June 28, 2017</Text>
+                <Text style={styles.name}>{moment(this.props.movie.detailMovie.releaseDate).format('MMMM D, YYYY')}</Text>
               </View>
               <View style={styles.colLeft}>
                 <Text style={styles.text}>Directed by</Text>
-                <Text style={styles.name}>Jon Watss</Text>
+                <Text style={styles.name}>{this.props.movie.detailMovie.directed}</Text>
               </View>
             </View>
             <View style={styles.rowDetail}>
               <View style={styles.colRight}>
                 <Text style={styles.text}>Duration</Text>
-                <Text style={styles.name}>2 hrs 13 min</Text>
+                <Text style={styles.name}>{this.props.movie.detailMovie.duration}</Text>
               </View>
               <View style={styles.colLeft}>
                 <Text style={styles.text}>Casts</Text>
-                <Text style={styles.name}>Tom Holland, Robert Downey Jr., etc.</Text>
+                <Text style={styles.name}>{this.props.movie.detailMovie.casts}</Text>
               </View>
             </View>
             <View style={styles.line} />
             <View>
               <Text style={styles.desc}>Synopsis</Text>
-              <Text style={styles.descText}>Thrilled by his experience with the Avengers, Peter returns home, where he lives with his Aunt May, under the watchful eye of his new mentor Tony Stark, Peter tries to fall back into his normal daily routine - distracted by thoughts of proving himself to be more than just your friendly neighborhood Spider-Man - but when the Vulture emerges as a new villain, everything that Peter holds most important will be threatened. </Text>
+              <Text style={styles.descText}>{this.props.movie.detailMovie.description}</Text>
             </View>
           </View>
           <View style={styles.showtime}>
             <Text style={styles.titleShowtime}>Showtimes and Tickets</Text>
-            <Select icon={<Calendar />} data={['2020-01-02', '2020-01-03']} label="Set a date" />
+            <Select icon={<Calendar />} data={['2021-01-28', '2020-01-03', '2021-02-21']} label="Set a date" onChange={(value) =>
+            this.changeDate(value)
+          } value={this.state.date} />
             <View style={{height: 12}} />
-            <Select icon={<Location />} data={['Jakarta', 'Karawang']} label="Set a city" />
+            <Select icon={<Location />} data={['Jakarta', 'Purwokerto']} label="Set a city" onChange={(value) =>
+            this.changeLocation(value)
+          } value={this.state.location} />
           </View>
-          <Showtime onPress={() => this.props.navigation.navigate('Order')} />
-          <Showtime onPress={() => this.props.navigation.navigate('Order')} />
-          <Showtime onPress={() => this.props.navigation.navigate('Order')} />
+          {this.props.showtime.errorMsg !== '' ? <Text>{this.props.showtime.errorMsg}</Text> : this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : this.state.showtime ? this.state.showtime.map((value, index) => {
+            return (
+              <View key={String(index)}>
+                <Showtime data={value} book={this.bookNow} />
+              </View>
+            )
+          }) : <Text style={{textAlign: 'center'}}>Please select a date and location</Text>}
           <View style={styles.viewMore}>
             <View style={styles.lineLeft} />
               <TouchableOpacity>
@@ -92,7 +139,8 @@ const styles = StyleSheet.create({
   imageMovie: {
     width: 159,
     height: 244,
-    borderRadius: 16
+    borderRadius: 16,
+    resizeMode: 'cover'
   },
   title: {
     fontSize: 20,
@@ -173,3 +221,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#5F2EEA'
   }
 })
+
+const mapStateToProps = state => ({
+  movie: state.movie,
+  showtime: state.showtime
+})
+
+const mapDispatchToProps = { showtimeMovie, order }
+
+export default connect(mapStateToProps, mapDispatchToProps)(MovieDetail)

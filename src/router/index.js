@@ -10,6 +10,7 @@ import MovieDetail from '../pages/MovieDetail'
 import Order from '../pages/Order'
 import Payment from '../pages/Payment'
 import Ticket from '../pages/Ticket'
+import Profile from '../pages/Profile'
 import Navbar from '../components/Navbar'
 
 const Stack = createStackNavigator()
@@ -21,11 +22,12 @@ const Router = () => {
       <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}} />
       <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false}} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: false}} />
-      <Stack.Screen name="Home" component={Home} options={{header: () => <Navbar />}} />
-      <Stack.Screen name="Details" component={MovieDetail} options={{header: () => <Navbar />}} />
-      <Stack.Screen name="Order" component={Order} options={{header: () => <Navbar />}} />
-      <Stack.Screen name="Payment" component={Payment} options={{header: () => <Navbar />}} />
-      <Stack.Screen name="Ticket" component={Ticket} options={{header: () => <Navbar />}} />
+      <Stack.Screen name="Home" component={Home} options={{header: props => <Navbar {...props} />}} />
+      <Stack.Screen name="Details" component={MovieDetail} options={{header: props => <Navbar {...props} />}} />
+      <Stack.Screen name="Order" component={Order} options={{header: props => <Navbar {...props} />}} />
+      <Stack.Screen name="Payment" component={Payment} options={{header: props => <Navbar {...props} />}} />
+      <Stack.Screen name="Ticket" component={Ticket} options={{header: props => <Navbar {...props} />}} />
+      <Stack.Screen name="Profile" component={Profile} options={{header: props => <Navbar {...props} />}} />
     </Stack.Navigator>
   )
 }

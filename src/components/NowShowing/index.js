@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Image } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-// import nowShowing1 from '../../assets/images/nowShowing1.png'
+import {REACT_APP_API_URL as API_URL} from '@env'
 
 export default class NowShowing extends Component {
   render() {
     return (
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={styles.card}>
-          <Image source={{uri: `http://192.168.1.13:5000/uploads/movies/${this.props.data.image}`}} style={styles.imageNowShowing} />
+          <Image source={{uri: `${API_URL}uploads/movies/${this.props.data.image}`}} style={styles.imageNowShowing} />
         </View>
       </TouchableOpacity>
   )

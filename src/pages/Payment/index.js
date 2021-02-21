@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome'
+
+import { connect } from 'react-redux'
+import { checkOut } from '../../redux/actions/order'
 
 import FooterHome from '../../components/FooterHome'
 import GooglePay from '../../assets/icons/ic-google-pay.svg'
@@ -15,14 +18,23 @@ import InputText from '../../components/Form/InputText'
 import InputNumber from '../../components/Form/InputNumber'
 import Button from '../../components/Button'
 
-export default class Payment extends Component {
+class Payment extends Component {
+  state = {
+    loading: false
+  }
+  payOrder = async () => {
+    this.setState({loading: true})
+    await this.props.checkOut(this.props.order.results[0].idMovie, this.props.order.results[0].idCinema, this.props.order.results[0].id, this.props.order.seatChecked, this.props.auth.token)
+    this.setState({loading: false})
+    this.props.navigation.navigate('Ticket')
+  }
   render() {
     return (
       <View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.cardTotal}>
             <Text style={styles.textTotal}>Total Payment</Text>
-            <Text style={styles.numTotal}>$30.00</Text>
+            <Text style={styles.numTotal}>${this.props.order.results[0].price * this.props.order.seatChecked.join(', ').split(', ').length}</Text>
           </View>
           <View style={styles.container}>
             <Text style={styles.title}>Payment Method</Text>
@@ -71,18 +83,18 @@ export default class Payment extends Component {
             </View>
             <Text style={styles.title}>Personal Info</Text>
             <View style={styles.card}>
-              <InputText label="Full Name" placeholder="Type your full name" value="Abbi Satria" paddingVertical={12} />
+              <InputText label="Full Name" placeholder="Type your full name" value={`${this.props.auth.user.firstname} ${this.props.auth.user.lastname}`} paddingVertical={12} />
               <View style={{height: 24}} />
-              <InputText label="Email" placeholder="Type your email" value="abbisatria48@gmail.com" paddingVertical={12} />
+              <InputText label="Email" placeholder="Type your email" value={this.props.auth.user.email} paddingVertical={12} />
               <View style={{height: 24}} />
-              <InputNumber label="Phone Number" placeholder="Type your phone number" value="81445687121" />
+              <InputNumber label="Phone Number" placeholder="Type your phone number" value={this.props.auth.user.phoneNumber} />
               <View style={{height: 24}} />
               <View style={styles.alert}>
                 <Icon name="exclamation-triangle" color="#F4B740" size={20} />
                 <Text style={styles.textAlert}>Fill your data correctly.</Text>
               </View>
             </View>
-            <Button text="Pay your order" onPress={() => this.props.navigation.navigate('Ticket')} />
+            {this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : <Button text="Pay your order" onPress={() => this.payOrder()} />}
           </View>
           <View style={styles.containerFooter}>
             <FooterHome />
@@ -203,3 +215,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   }
 })
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  order: state.order
+})
+
+const mapDispatchToProps = { checkOut }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Payment)

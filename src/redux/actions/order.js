@@ -80,3 +80,21 @@ export const detailTicket = (token, id) => {
     }
   }
 }
+
+export const orderHistory = (token, id) => {
+  return async dispatch => {
+    try {
+      const response = await http(token).get(`transaction/orderHistory/${id}`)
+      dispatch({
+        type: 'ORDER_HISTORY',
+        payload: response.data.results
+      })
+    } catch(err) {
+      const { message } = err.response.data
+      dispatch({
+        type: 'SET_MESSAGE_HISTORY',
+        payload: message
+      })
+    }
+  }
+}

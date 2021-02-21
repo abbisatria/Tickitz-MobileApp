@@ -3,6 +3,7 @@ const initialState = {
   resultsCheckOut: null,
   seatSold: [],
   seatChecked: null,
+  orderHistory: null,
   errorMsg: ''
 }
 
@@ -38,6 +39,12 @@ const orderReducer = (state = initialState, action) => {
         seatChecked: action.payload
       }
     }
+    case 'ORDER_HISTORY': {
+      return {
+        ...state,
+        orderHistory: action.payload
+      }
+    }
     case 'SET_MESSAGE_SEAT_SOLD': {
       return {
         ...state,
@@ -59,6 +66,13 @@ const orderReducer = (state = initialState, action) => {
         resultsCheckOut: null
       }
     }
+    case 'SET_MESSAGE_HISTORY': {
+      return {
+        ...state,
+        errorMsg: action.payload,
+        orderHistory: null
+      }
+    }
     case 'CLEAR_ORDER': {
       return {
         ...state,
@@ -66,6 +80,7 @@ const orderReducer = (state = initialState, action) => {
         resultsCheckOut: null,
         seatSold: [],
         seatChecked: null,
+        orderHistory: null,
         errorMsg: ''
       }
     }

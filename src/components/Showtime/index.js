@@ -1,39 +1,39 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, StyleSheet, View, Image } from 'react-native'
 
 import Button from '../../components/Button'
 
-import EbvId from '../../assets/images/ebv.id.svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import {REACT_APP_API_URL as API_URL} from '@env'
 
 export default class Showtime extends Component {
   state = {
-    time: '',
-    showtime: ['08.30am', '09.30am', '10.30am', '11.30am', '12.30am']
+    time: ''
   }
   render() {
+    console.log(this.state.time)
     return (
       <View style={styles.cardCinema}>
         <View style={styles.rowCinema}>
-          <EbvId />
-          <Text style={styles.textCinema}>Whatever street No.12, South Purwokerto</Text>
+          <Image source={{uri: `${API_URL}uploads/cinemas/${this.props.data.image}`}} style={styles.image} />
+          <Text style={styles.textCinema}>{this.props.data.address}</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.rowShowtime}>
-          {this.state.showtime.map((value, index) => {
+          {this.props.data.showtime.map((value, index) => {
             return (
-              <TouchableOpacity key={String(index)} onPress={() => this.setState({time: value})}>
-                <Text style={this.state.time === value ? styles.textShowtimeActive : styles.textShowtime}>{value}</Text>
+              <TouchableOpacity key={String(index)} onPress={() => this.setState({time: value.id})}>
+                <Text style={this.state.time === value.id ? styles.textShowtimeActive : styles.textShowtime}>{value.name}</Text>
               </TouchableOpacity>
             )
           })}
         </View>
         <View style={styles.rowPrice}>
           <Text style={styles.price}>Price</Text>
-          <Text style={styles.seat}>$10.00/seat</Text>
+          <Text style={styles.seat}>${this.props.data.price}/seat</Text>
         </View>
         <View style={styles.rowBook}>
-          <Button text="Book Now" padding={15} onPress={this.props.onPress} />
+          <Button text="Book Now" padding={15} onPress={() => this.props.book(this.state.time)} />
           <Button text="Add to cart" padding={15} color="white" textColor="#5F2EEA" />
         </View>
       </View>
@@ -93,13 +93,18 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   textShowtime: {
-    marginRight: 10, 
+    marginRight: 9, 
     marginBottom: 8,
     color: '#A0A3BD'
   },
   textShowtimeActive: {
-    marginRight: 10, 
+    marginRight: 9, 
     marginBottom: 8,
     color: '#4E4B66'
+  },
+  image: {
+    width: 106,
+    height: 43,
+    resizeMode: 'contain'
   }
 })

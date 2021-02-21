@@ -16,7 +16,7 @@ class SignUp extends Component {
           <View style={styles.form}>
             <InputText label="Email" placeholder="Write your email" />
             <View style={styles.gap} />
-            <InputPassword label="Password" placeholder="Write your password" />
+            <InputPassword label="Password" placeholder="Write your password" paddingVertical={10} />
           </View>
           <Button text="Sign Up" />
           <Footer title="Do you already have an account?" textLink="Log in" onPress={() => this.props.navigation.navigate('SignIn')} />

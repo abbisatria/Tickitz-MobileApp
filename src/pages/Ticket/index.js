@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import moment from 'moment'
 import QRCode from 'react-native-qrcode-svg'
+
+import { connect } from 'react-redux'
 
 import FooterHome from '../../components/FooterHome'
 
-export default class Ticket extends Component {
+class Ticket extends Component {
   render() {
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -22,32 +25,32 @@ export default class Ticket extends Component {
             <View style={styles.rowDetail}>
               <View style={[styles.col, styles.widthCol]}>
                 <Text style={styles.name}>Movie</Text>
-                <Text style={styles.text}>Spider-Man: ..</Text>
+                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].movie}</Text>
               </View>
               <View style={styles.col}>
                 <Text style={styles.name}>Category</Text>
-                <Text style={styles.text}>PG-13</Text>
+                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].category}</Text>
               </View>
               <View style={[styles.col, styles.widthCol]}>
                 <Text style={styles.name}>Date</Text>
-                <Text style={styles.text}>07 Jul</Text>
+                <Text style={styles.text}>{moment(this.props.order.resultsCheckOut[0].showtimeDate).format('D MMMM')}</Text>
               </View>
               <View style={styles.col}>
                 <Text style={styles.name}>Time</Text>
-                <Text style={styles.text}>2:00pm</Text>
+                <Text style={styles.text}>{moment(this.props.order.resultsCheckOut[0].showtime, 'HH:mm:ss').format('hh:mm A')}</Text>
               </View>
               <View style={[styles.col, styles.widthCol]}>
                 <Text style={styles.name}>Count</Text>
-                <Text style={styles.text}>3 pcs</Text>
+                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].ticketCount} pcs</Text>
               </View>
               <View style={styles.col}>
                 <Text style={styles.name}>Seats</Text>
-                <Text style={styles.text}>C4, C5, C6</Text>
+                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].seats}</Text>
               </View>
             </View>
             <View style={styles.rowTotal}>
               <Text>Total</Text>
-              <Text>$30.00</Text>
+              <Text>${this.props.order.resultsCheckOut[0].totalPayment}</Text>
             </View>
           </View>
         </View>
@@ -141,3 +144,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   }
 })
+
+const mapStateToProps = state => ({
+  order: state.order
+})
+
+export default connect(mapStateToProps)(Ticket)

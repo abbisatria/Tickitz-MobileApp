@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native'
+import {REACT_APP_API_URL as API_URL} from '@env'
 
-import nowShowing1 from '../../assets/images/nowShowing1.png'
 
 export default class UpComing extends Component {
   render() {
     return (
       <View style={styles.card}>
-        <Image source={nowShowing1} style={styles.imageNowShowing} />
-        <Text style={styles.title}>Black Widow</Text>
-        <Text style={styles.text}>Action, Adventure, Sci-Fi</Text>
+        <Image source={{uri: `${API_URL}uploads/movies/${this.props.data.image}`}} style={styles.imageUpcoming} />
+        <Text style={styles.title}>{this.props.data.name}</Text>
+        <Text style={styles.text}>{this.props.data.genre}</Text>
         <TouchableOpacity activeOpacity={0.7} onPress={this.props.onPress}>
           <View style={styles.button}>
             <Text style={styles.textButton}>Details</Text>
@@ -53,5 +53,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Mulish-Regular',
     color: '#5F2EEA',
     textAlign: 'center'
+  },
+  imageUpcoming: {
+    width: 122,
+    height: 185,
+    borderRadius: 8,
+    resizeMode: 'cover'
   }
 })
