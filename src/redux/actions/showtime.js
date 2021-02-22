@@ -1,17 +1,37 @@
 import http from '../../helpers/http'
 
-export const cinemaLocation = (location) => {
+export const cinemaLocation = () => {
   return async dispatch => {
     try {
       dispatch({
         type: 'SET_SHOWTIME_MESSAGE',
-        payload: message
+        payload: ''
       })
-      const data = new URLSearchParams()
-      data.append('location', location)
-      const response = await http().post('cinemas/cinemaLocation', data)
+      const response = await http().get('cinemas/location')
       dispatch({
         type: 'LIST_CINEMA_LOCATION',
+        payload: response.data.results
+      })
+    } catch(err) {
+      const { message } = err.response.data
+      dispatch({
+        type: 'SET_SHOWTIME_MESSAGE',
+        payload: message
+      })
+    }
+  }
+}
+
+export const listShowtime = (id) => {
+  return async dispatch => {
+    try {
+      dispatch({
+        type: 'SET_SHOWTIME_MESSAGE',
+        payload: ''
+      })
+      const response = await http().get(`showtimes/showtime/${id}`)
+      dispatch({
+        type: 'LIST_SHOWTIME',
         payload: response.data.results
       })
     } catch(err) {

@@ -8,7 +8,7 @@ import {REACT_APP_API_URL as API_URL} from '@env'
 import moment from 'moment'
 import { ProgressBar } from 'react-native-paper';
 
-import ProfilePicture from '../../assets/images/profile.jpg'
+// import ProfilePicture from '../../assets/images/profile.jpg'
 import Stars from '../../assets/icons/ic-stars'
 
 import InputText from '../../components/Form/InputText'
@@ -23,11 +23,11 @@ class Profile extends Component {
     routes: [
       { key: 'details', title: 'Details' },
       { key: 'order', title: 'Order' }
-    ]
+    ],
   }
-  async componentDidMount() {
-    await this.props.orderHistory(this.props.auth.token, this.props.auth.user.id)
-  }
+  // async componentDidMount() {
+  //   await this.props.orderHistory(this.props.auth.token, this.props.auth.user.id)
+  // }
   renderTabBar = props => (
     <TabBar
       {...props}
@@ -90,27 +90,10 @@ class Profile extends Component {
       </View>
     </ScrollView>
   )
-  OrderRoute = () => (
-    <ScrollView style={styles.scene} showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
-        {this.props.order.orderHistory !== null ? this.props.order.orderHistory.map((value, index) => {
-          return (
-            <View style={styles.card} key={String(index)}>
-              <Image source={{uri: `${API_URL}uploads/cinemas/${value.image}`}} style={styles.imageCinema} />
-              <Text style={styles.date}>{moment(value.createdAt).format('dddd, D MMMM YYYY - hh:mm A')}</Text>
-              <Text style={styles.movie}>{value.movie}</Text>
-              <View style={styles.line} />
-              <Button text="Ticket in active" textColor="white" color="#00BA88" padding={10} />
-            </View>
-          )
-        }) : <Text>No Order</Text>}
-      </View>
-    </ScrollView>
-  )
   initialLayout = { width: Dimensions.get('window').width }
   renderScene = SceneMap({
     details: this.DetailsRoute,
-    order: this.OrderRoute,
+    order: OrderRouteConnect,
   })
   render() {
     const { index, routes } = this.state
@@ -270,5 +253,30 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = { orderHistory }
+
+const OrderRoute = (props) => {
+  React.useEffect(() => {
+    props.orderHistory(props.auth.token, props.auth.user.id)
+  }, [])
+  return (
+    <ScrollView style={styles.scene} showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
+        {props.order.orderHistory !== null ? props.order.orderHistory.map((value, index) => {
+          return (
+            <View style={styles.card} key={String(index)}>
+              <Image source={{uri: `${API_URL}uploads/cinemas/${value.image}`}} style={styles.imageCinema} />
+              <Text style={styles.date}>{moment(value.createdAt).format('dddd, D MMMM YYYY - hh:mm A')}</Text>
+              <Text style={styles.movie}>{value.movie}</Text>
+              <View style={styles.line} />
+              <Button text="Ticket in active" textColor="white" color="#00BA88" padding={10} />
+            </View>
+          )
+        }) : <Text>No Order</Text>}
+      </View>
+    </ScrollView>
+  )
+}
+
+const OrderRouteConnect = connect(mapStateToProps, mapDispatchToProps)(OrderRoute)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

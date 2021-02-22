@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, Image, ActivityIndicator } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import {REACT_APP_API_URL as API_URL} from '@env'
-import { showtimeMovie } from '../../redux/actions/showtime'
+import { showtimeMovie, cinemaLocation, listShowtime } from '../../redux/actions/showtime'
 import { order } from '../../redux/actions/order'
 import moment from 'moment'
 
@@ -49,6 +49,11 @@ class MovieDetail extends Component {
     this.setState({loading: false})
     this.props.navigation.navigate('Order')
   }
+
+  async componentDidMount() {
+    await this.props.cinemaLocation()
+    await this.props.listShowtime(this.props.movie.detailMovie.id)
+  }
   render() {
     console.log(this.props.showtime)
     return (
@@ -90,11 +95,11 @@ class MovieDetail extends Component {
           </View>
           <View style={styles.showtime}>
             <Text style={styles.titleShowtime}>Showtimes and Tickets</Text>
-            <Select icon={<Calendar />} data={['2021-01-28', '2020-01-03', '2021-02-21']} label="Set a date" onChange={(value) =>
+            <Select icon={<Calendar />} data={this.props.showtime.showtime && this.props.showtime.showtime} label="Set a date" onChange={(value) =>
             this.changeDate(value)
           } value={this.state.date} />
             <View style={{height: 12}} />
-            <Select icon={<Location />} data={['Jakarta', 'Purwokerto']} label="Set a city" onChange={(value) =>
+            <Select icon={<Location />} data={this.props.showtime.location && this.props.showtime.location} label="Set a city" onChange={(value) =>
             this.changeLocation(value)
           } value={this.state.location} />
           </View>
@@ -227,6 +232,6 @@ const mapStateToProps = state => ({
   showtime: state.showtime
 })
 
-const mapDispatchToProps = { showtimeMovie, order }
+const mapDispatchToProps = { showtimeMovie, order, cinemaLocation, listShowtime }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MovieDetail)

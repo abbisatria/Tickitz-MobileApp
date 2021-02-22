@@ -1,6 +1,7 @@
 const initialState = {
   results: null,
   location: null,
+  showtime: null,
   errorMsg: ''
 }
 
@@ -16,6 +17,12 @@ const showtimeReducer = (state = initialState, action) => {
       return {
         ...state,
         location: action.payload
+      }
+    }
+    case 'LIST_SHOWTIME': {
+      return {
+        ...state,
+        showtime: action.payload
       }
     }
     case 'SET_SHOWTIME_MESSAGE': {
