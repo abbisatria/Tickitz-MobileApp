@@ -29,10 +29,9 @@ export const login = (email, password) => {
   }
 }
 
-export const signUp = (username, email, password) => {
+export const signUp = (email, password) => {
   return async dispatch => {
     const params = new URLSearchParams()
-    params.append('username', username)
     params.append('email', email)
     params.append('password', password)
     try {
@@ -79,36 +78,37 @@ export const forgotPassword = (email) => {
   }
 }
 
-export const updateProfile = (token, id, firstname, lastname, phoneNumber, email, password, file) => {
+export const updateProfile = (token, id, data) => {
   return async dispatch => {
-    const data = new FormData()
-    if(firstname !== '') {
-      data.append('firstname', firstname)
+    const params = new FormData()
+    if(data.firstname) {
+      params.append('firstname', data.firstname)
     } 
-    if(lastname !== '') {
-      data.append('lastname', lastname)
+    if(data.lastname) {
+      params.append('lastname', data.lastname)
     } 
-    if(phoneNumber !== '') {
-      data.append('phoneNumber', phoneNumber)
+    if(data.phoneNumber) {
+      params.append('phoneNumber', data.phoneNumber)
     } 
-    if(email !== '') {
-      data.append('email', email)
+    if(data.email) {
+      params.append('email', data.email)
     } 
-    if(password !== '') {
-      data.append('password', password)
+    if(data.password) {
+      params.append('password', data.password)
     }
-    if(file !== null) {
-      data.append('image', file)
+    if(data.file) {
+      params.append('image', data.file)
     }
     try {
       dispatch({
         type: 'SET_AUTH_MESSAGE',
         payload: ''
       })
-      const results = await http(token).patch(`users/updateProfile/${id}`, data)
+      const results = await http(token).patch(`users/updateProfile/${id}`, params)
       dispatch({
         type: 'UPDATE_PROFILE',
-        payload: results.data.results
+        payload: results.data.results,
+        message: results.data.message
       })
     } catch (err) {
       const { message } = err.response.data

@@ -5,7 +5,7 @@ const InputText = ({label, placeholder, value, paddingHorizontal = 22,  paddingV
   return (
     <View>
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input(paddingHorizontal, paddingVertical)} placeholder={placeholder} value={value} onChangeText={onChange} />
+      <TextInput style={styles.input(paddingHorizontal, paddingVertical)} placeholder={placeholder} defaultValue={value} onChangeText={onChange} />
     </View>
   )
 }

@@ -11,7 +11,6 @@ export default class Showtime extends Component {
     time: ''
   }
   render() {
-    console.log(this.state.time)
     return (
       <View style={styles.cardCinema}>
         <View style={styles.rowCinema}>

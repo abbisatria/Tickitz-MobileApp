@@ -5,6 +5,7 @@ import Button from '../Button'
 import { connect } from 'react-redux'
 import { logout } from '../../redux/actions/auth'
 import { clearOrder } from '../../redux/actions/order'
+// import {REACT_APP_API_URL as API_URL} from '@env'
 import {REACT_APP_API_URL as API_URL} from '@env'
 
 import Logo from '../../assets/images/logo.svg'

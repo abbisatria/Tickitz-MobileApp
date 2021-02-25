@@ -38,7 +38,7 @@ class MovieDetail extends Component {
       if(this.state.date !== '' && this.state.location !== '') {
         const { date, location, idMovie} = this.state
         await this.props.showtimeMovie(date, location, idMovie)
-        this.setState({loading: false})
+        this.setState({loading: false, showtime: this.props.showtime.results})
       }
     })
   }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native'
-import { showMessage } from 'react-native-flash-message'
 
 import { connect } from 'react-redux'
 import { login } from '../../redux/actions/auth'
@@ -10,6 +9,7 @@ import Button from '../../components/Button'
 import InputText from '../../components/Form/InputText'
 import InputPassword from '../../components/Form/InputPassword'
 import Footer from '../../components/Footer'
+import { showMessage } from '../../helpers/showMessage'
 
 class SignIn extends Component {
   state = {
@@ -23,18 +23,12 @@ class SignIn extends Component {
     await this.props.login(email, password)
     if (this.props.auth.token) {
       this.setState({ loading: false })
-      this.showToast('Login Success', 'success')
+      showMessage('Login Success', 'success')
       this.props.navigation.navigate('Home')
     } else {
       this.setState({ loading: false })
-      this.showToast(this.props.auth.errorMsg)
+      showMessage(this.props.auth.errorMsg)
     }
-  }
-  showToast = (message, type) => {
-    showMessage({
-      message,
-      type: type === 'success' ? 'success' : 'danger',
-    })
   }
   render() {
     return (

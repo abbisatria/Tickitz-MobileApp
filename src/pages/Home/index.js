@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, View, ScrollView, TouchableOpacity, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import { nowShowing, upComing, detailMovie } from '../../redux/actions/movie'
 
@@ -12,17 +12,56 @@ import UpComing from '../../components/UpComing'
 
 class Home extends Component {
   state = {
+    selectMonth: '',
     month: [
-      "September",
-      "October",
-      "November",
-      "December",
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
+      {
+        id: 9,
+        month: "September"
+      },
+      {
+        id: 10,
+        month: "October"
+      },
+      {
+        id: 11,
+        month: "November"
+      },
+      {
+        id: 12,
+        month: "December"
+      },
+      {
+        id: 1,
+        month: "January"
+      },
+      {
+        id: 2,
+        month: "February"
+      },
+      {
+        id: 3,
+        month: "March"
+      },
+      {
+        id: 4,
+        month: "April"
+      },
+      {
+        id: 5,
+        month: "May"
+      },
+      {
+        id: 6,
+        month: "June"
+      },
+      {
+        id: 7,
+        month: "July"
+      },
+      {
+        id: 8,
+        month: "August"
+      }
     ],
     nowShowingList: []
   }
@@ -34,6 +73,10 @@ class Home extends Component {
     await this.props.detailMovie(id)
     this.props.navigation.navigate('Details')
   }
+  monthUpComing = async (value) => {
+    await this.props.upComing(value)
+    this.setState({ selectMonth: value })
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -42,43 +85,52 @@ class Home extends Component {
           <View>
             <View style={styles.row}>
               <Text style={styles.showText}>Now Showing</Text>
-              <Text style={styles.showLink}>view all</Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('ViewAllMovie')}>
+                <Text style={styles.showLink}>view all</Text>
+              </TouchableOpacity>
             </View>
-            <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {this.props.movie.nowShowing && this.props.movie.nowShowing.map((value, index) => {
-                return (
-                  <View key={String(index)}>
-                    <NowShowing data={value} onPress={() => this.detailMovie(value.id)} />
-                  </View>
-                )
-              })}
-            </ScrollView>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.slide}
+              data={this.props.movie.nowShowing}
+              renderItem={({ item }) => (
+                <NowShowing data={item} onPress={() => this.detailMovie(item.id)} />
+              )}
+              keyExtractor = {item => String(item.id)}
+            />
           </View>
           <View>
             <View style={styles.row}>
               <Text style={[styles.showText, {color: 'black'}]}>Upcoming Movies</Text>
-              <Text style={styles.showLink}>view all</Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('ViewAllUpComing')}>
+                <Text style={styles.showLink}>view all</Text>
+              </TouchableOpacity>
             </View>
-            <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {this.state.month.map((value, index) => {
-                return (
-                  <TouchableOpacity activeOpacity={0.7} key={String(index)}>
-                    <View style={styles.button}>
-                      <Text style={styles.textButton}>{value}</Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              })}
-            </ScrollView>
-            <ScrollView style={styles.slide} horizontal showsHorizontalScrollIndicator={false}>
-              {this.props.movie.upComing && this.props.movie.upComing.map((value, index) => {
-                return (
-                  <View key={String(index)}>
-                    <UpComing data={value} onPress={() => this.detailMovie(value.id)} />
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.slide}
+              data={this.state.month}
+              renderItem={({ item }) => (
+                <TouchableOpacity activeOpacity={0.7} onPress={() => this.monthUpComing(item.id)}>
+                  <View style={[styles.button, this.state.selectMonth === item.id ? styles.buttonSelect : null]}>
+                    <Text style={[styles.textButton, this.state.selectMonth === item.id ? styles.textButtonSelect : null]}>{item.month}</Text>
                   </View>
-                )
-              })}
-            </ScrollView>
+                </TouchableOpacity>
+              )}
+              keyExtractor = {item => String(item.id)}
+            />
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.slide}
+              data={this.props.movie.upComing}
+              renderItem={({ item }) => (
+                <UpComing data={item} onPress={() => this.detailMovie(item.id)} />
+              )}
+              keyExtractor = {item => String(item.id)}
+            />
           </View>
           <View style={styles.moviegoers}>
             <Text style={styles.moviegoersText}>Be the vanguard of the</Text>
@@ -129,10 +181,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12
   },
+  buttonSelect: {
+    backgroundColor: '#5F2EEA'
+  },
   textButton: {
     fontSize: 14,
     fontFamily: 'Mulish-SemiBold',
     color: '#5F2EEA'
+  },
+  textButtonSelect: {
+    fontSize: 14,
+    fontFamily: 'Mulish-SemiBold',
+    color: 'white'
   },
   moviegoers: {
     elevation: 1,

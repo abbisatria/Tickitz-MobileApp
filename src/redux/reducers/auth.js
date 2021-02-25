@@ -29,7 +29,11 @@ const authReducer = (state = initialState, action) => {
     case 'UPDATE_PROFILE': {
       return {
         ...state,
-        user: action.payload
+        user: {
+          ...state.user,
+          ...action.payload
+        },
+        message: action.message
       }
     }
     case 'LOGOUT': {
