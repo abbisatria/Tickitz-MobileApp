@@ -62,8 +62,7 @@ class Home extends Component {
         id: 8,
         month: "August"
       }
-    ],
-    nowShowingList: []
+    ]
   }
   async componentDidMount(){
     await this.props.nowShowing()
@@ -135,7 +134,7 @@ class Home extends Component {
           <View style={styles.moviegoers}>
             <Text style={styles.moviegoersText}>Be the vanguard of the</Text>
             <Text style={styles.moviegoersTitle}>Moviegoers</Text>
-            <InputText placeholder="Type your email" />
+            <InputText placeholder="Type your email" keyboardType="email-address" />
             <View style={{height: 16}} />
             <Button text="Join now" />
             <Text style={styles.moviegoersDesc}>By joining you as a Tickitz member, we will always send you the latest updates via email .</Text>

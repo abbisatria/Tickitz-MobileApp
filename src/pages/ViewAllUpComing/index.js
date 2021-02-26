@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Image, FlatList, ActivityIndicator } from 'react-native'
+import { Text, StyleSheet, View, Image, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { upComing } from '../../redux/actions/movie'
 import { REACT_APP_API_URL as API_URL } from '@env'
@@ -11,7 +11,58 @@ class ViewAllUpComing extends Component {
     loading: false,
     message: '',
     upComingList: [],
-    page: 1
+    page: 1,
+    month: [
+      {
+        id: 9,
+        month: "September"
+      },
+      {
+        id: 10,
+        month: "October"
+      },
+      {
+        id: 11,
+        month: "November"
+      },
+      {
+        id: 12,
+        month: "December"
+      },
+      {
+        id: 1,
+        month: "January"
+      },
+      {
+        id: 2,
+        month: "February"
+      },
+      {
+        id: 3,
+        month: "March"
+      },
+      {
+        id: 4,
+        month: "April"
+      },
+      {
+        id: 5,
+        month: "May"
+      },
+      {
+        id: 6,
+        month: "June"
+      },
+      {
+        id: 7,
+        month: "July"
+      },
+      {
+        id: 8,
+        month: "August"
+      }
+    ],
+    selectMonth: ''
   }
   async componentDidMount(){
     this.setState({ loading: true })
@@ -40,11 +91,34 @@ class ViewAllUpComing extends Component {
       this.setState({ upComingList: newData, page: page + 1 })
     }
   }
+  monthUpComing = async (value) => {
+    this.setState({ loading: true })
+    await this.props.upComing(value)
+    if (this.props.movie.upComing.length > 0) {
+      this.setState({ message: '', selectMonth: value, loading: false, upComingList: this.props.movie.upComing, page: 1 })
+    } else {
+      this.setState({ message: 'Movie Not Found', selectMonth: value, loading: false, upComingList: this.props.movie.upComing, page: 1 })
+    }
+  }
   render() {
     return (
       <View style={styles.parent}>
         <View style={styles.container}>
           <Text style={styles.title}>Up Coming</Text>
+          <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.slide}
+              data={this.state.month}
+              renderItem={({ item }) => (
+                <TouchableOpacity activeOpacity={0.7} onPress={() => this.monthUpComing(item.id)}>
+                  <View style={[styles.button, this.state.selectMonth === item.id ? styles.buttonSelect : null]}>
+                    <Text style={[styles.textButton, this.state.selectMonth === item.id ? styles.textButtonSelect : null]}>{item.month}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor = {item => String(item.id)}
+            />
           <InputText placeholder="Search Movie...." paddingVertical={10} onChange={(value) => this.search(value)} />
         </View>
         {this.state.loading ? (<ActivityIndicator color='black' size='large' />) : this.state.upComingList.length > 0 ? (
@@ -134,6 +208,32 @@ const styles = StyleSheet.create({
     fontFamily: 'Mulish-Regular',
     color: '#A0A3BD',
     marginTop: 20
+  },
+  button: {
+    borderRadius: 8,
+    width: 127,
+    height: 42,
+    borderWidth: 1,
+    borderColor: '#5F2EEA',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12
+  },
+  buttonSelect: {
+    backgroundColor: '#5F2EEA'
+  },
+  textButton: {
+    fontSize: 14,
+    fontFamily: 'Mulish-SemiBold',
+    color: '#5F2EEA'
+  },
+  textButtonSelect: {
+    fontSize: 14,
+    fontFamily: 'Mulish-SemiBold',
+    color: 'white'
+  },
+  slide: {
+    marginTop: 10
   }
 })
 

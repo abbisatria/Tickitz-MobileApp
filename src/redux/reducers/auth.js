@@ -3,6 +3,7 @@ const initialState = {
   user: null,
   message: '',
   errorMsg: '',
+  tokenResetPassword: null
 }
 
 const authReducer = (state = initialState, action) => {
@@ -23,7 +24,15 @@ const authReducer = (state = initialState, action) => {
     case 'FORGOT_PASSWORD': {
       return {
         ...state,
-        message: action.payload
+        tokenResetPassword: action.payload,
+        message: action.message
+      }
+    }
+    case 'RESET_PASSWORD': {
+      return {
+        ...state,
+        message: action.payload,
+        tokenResetPassword: action.tokenResetPassword
       }
     }
     case 'UPDATE_PROFILE': {
@@ -42,7 +51,8 @@ const authReducer = (state = initialState, action) => {
         token: null,
         user: null,
         message: '',
-        errorMsg: ''
+        errorMsg: '',
+        tokenResetPassword: null
       }
     }
     case 'SET_AUTH_MESSAGE': {

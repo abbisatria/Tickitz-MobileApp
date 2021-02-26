@@ -85,7 +85,7 @@ class Payment extends Component {
             <View style={styles.card}>
               <InputText label="Full Name" placeholder="Type your full name" value={`${this.props.auth.user.firstname} ${this.props.auth.user.lastname}`} paddingVertical={12} />
               <View style={{height: 24}} />
-              <InputText label="Email" placeholder="Type your email" value={this.props.auth.user.email} paddingVertical={12} />
+              <InputText label="Email" placeholder="Type your email" keyboardType="email-address" value={this.props.auth.user.email} paddingVertical={12} />
               <View style={{height: 24}} />
               <InputNumber label="Phone Number" placeholder="Type your phone number" value={this.props.auth.user.phoneNumber} />
               <View style={{height: 24}} />

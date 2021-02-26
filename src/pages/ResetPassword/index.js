@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
 import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
-import { forgotPassword } from '../../redux/actions/auth'
+import { resetPassword } from '../../redux/actions/auth'
 import { showMessage } from '../../helpers/showMessage'
 
 import Header from '../../components/Header'
 import Button from '../../components/Button'
-import InputText from '../../components/Form/InputText'
+import InputPassword from '../../components/Form/InputPassword'
 
-class ForgotPassword extends Component {
+class ResetPassword extends Component {
   state = {
-    email: '',
+    password: '',
     loading: false
   }
-  forgotPasswordSend = async () => {
+  resetPasswordSend = async () => {
     this.setState({ loading: true })
-    await this.props.forgotPassword(this.state.email)
+    await this.props.resetPassword(this.props.auth.tokenResetPassword, this.state.password)
     this.setState({ loading: false })
-    if (this.props.auth.tokenResetPassword) {
+    if (this.props.auth.errorMsg === '') {
       showMessage(this.props.auth.message, 'success')
-      this.props.navigation.navigate('ResetPassword')
+      this.props.navigation.replace('SignIn')
     } else {
       showMessage(this.props.auth.errorMsg)
     }
@@ -28,11 +28,11 @@ class ForgotPassword extends Component {
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Header title="Forgot Password" subTitle="we'll send a link to your email shortly" />
+          <Header title="Reset Password" subTitle="Please reset your password" />
           <View style={styles.form}>
-            <InputText label="Email" placeholder="Write your email" keyboardType="email-address" onChange={(email) => this.setState({email})} />
+            <InputPassword label="New Password" placeholder="Write your password" onChange={(password) => this.setState({password})} paddingVertical={10} />
           </View>
-          {this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : <Button text="Active Now" onPress={() => this.forgotPasswordSend()} />}
+          {this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : <Button text="Reset Password" onPress={() => this.resetPasswordSend()} />}
         </View>
       </ScrollView>
     )
@@ -54,6 +54,6 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-const mapDispatchToProps = { forgotPassword }
+const mapDispatchToProps = { resetPassword }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)

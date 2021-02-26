@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Component } from 'react'
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import Router from './src/router'
@@ -8,20 +8,22 @@ import { PersistGate } from 'redux-persist/integration/react'
 import FlashMessage from 'react-native-flash-message'
 import SplashScreen from 'react-native-splash-screen'
 
-const App = () => {
-  useEffect(() => {
+class App extends Component {
+  componentDidMount() {
     SplashScreen.hide()
-  }, [])
-  const { store, persistor } = persistedStore()
-  return (
-    <NavigationContainer>
-      <PersistGate persistor={persistor} />
-      <Provider store={store}>
-        <Router />
-        <FlashMessage position="top" />
-      </Provider>
-    </NavigationContainer>
-  )
+  }
+  render() {
+    const { store, persistor } = persistedStore()
+    return (
+      <NavigationContainer>
+        <PersistGate persistor={persistor} />
+        <Provider store={store}>
+          <Router />
+          <FlashMessage position="top" duration={4000} />
+        </Provider>
+      </NavigationContainer>
+    )
+  }
 }
 
 export default App

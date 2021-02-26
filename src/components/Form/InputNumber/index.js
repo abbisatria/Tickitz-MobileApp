@@ -7,7 +7,7 @@ const InputNumber = ({label, placeholder, value, onChange, paddingHorizontal = 2
       <Text style={styles.label}>{label}</Text>
       <View style={styles.row(paddingHorizontal)}>
         <Text style={styles.phone}>+62</Text>
-        <TextInput style={styles.input} placeholder={placeholder} defaultValue={value} onChangeText={onChange} />
+        <TextInput style={styles.input} placeholder={placeholder} defaultValue={value} onChangeText={onChange} keyboardType="phone-pad" />
       </View>
     </View>
   )

@@ -1,17 +1,23 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Image, FlatList, ActivityIndicator } from 'react-native'
+import { Picker } from '@react-native-picker/picker'
+import Icon from 'react-native-vector-icons/FontAwesome'
 import { connect } from 'react-redux'
 import { nowShowing } from '../../redux/actions/movie'
 import { REACT_APP_API_URL as API_URL } from '@env'
+import { showMessage } from '../../helpers/showMessage'
 
 import InputText from '../../components/Form/InputText'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 class ViewAllMovie extends Component {
   state = {
     loading: false,
     message: '',
     nowShowingList: [],
-    page: 1
+    page: 1,
+    sort: '',
+    order: 'ASC'
   }
   async componentDidMount(){
     this.setState({ loading: true })
@@ -33,19 +39,52 @@ class ViewAllMovie extends Component {
   }
   next = async () => {
     if (this.state.page !== this.props.movie.pageInfoNowShowing.totalPage) {
-      const { nowShowingList: oldNowShowingList, page } = this.state
-      await this.props.nowShowing(null, page + 1)
+      const { nowShowingList: oldNowShowingList, page, sort, order } = this.state
+      await this.props.nowShowing(null, page + 1, null, sort, order)
       const nowShowingList = this.props.movie.nowShowing
       const newData = [...oldNowShowingList, ...nowShowingList]
       this.setState({ nowShowingList: newData, page: page + 1 })
     }
   }
+  sortBy = async () => {
+    const { sort, order, page } = this.state
+    if (sort !== '') {
+      if (order === 'ASC') {
+        this.setState({ loading: true })
+        await this.props.nowShowing(null, page, null, sort, order)
+        this.setState({ loading: false, nowShowingList: this.props.movie.nowShowing, order: 'DESC' })
+      } else {
+        this.setState({ loading: true })
+        await this.props.nowShowing(null, page, null, sort, order)
+        this.setState({ loading: false, nowShowingList: this.props.movie.nowShowing, order: 'ASC' })
+      }
+    } else {
+      showMessage('Please select the sort first')
+    }
+  }
   render() {
-    console.log(this.state.nowShowingList)
+    // console.log(this.state)
     return (
       <View style={styles.parent}>
         <View style={styles.container}>
-          <Text style={styles.title}>Now Showing</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <Text style={styles.title}>Now Showing</Text>
+            <View style={styles.select}>
+            <Picker
+              selectedValue={this.state.sort}
+              onValueChange={(itemValue) =>
+                this.setState({ sort: itemValue })
+              }
+              >
+              <Picker.Item label="Sort" />
+              <Picker.Item label="Movie" value="name" />
+              <Picker.Item label="Release" value="releaseDate" />
+            </Picker>
+            </View>
+            <TouchableOpacity onPress={this.sortBy}>
+              {this.state.order === 'ASC' ? <Icon size={15} name="arrow-down" /> : <Icon size={15} name="arrow-up" />}
+            </TouchableOpacity>
+          </View>
           <InputText placeholder="Search Movie...." paddingVertical={10} onChange={(value) => this.search(value)} />
         </View>
         {this.state.loading ? (<ActivityIndicator color='black' size='large' />) : this.state.nowShowingList.length > 0 ? (
@@ -103,7 +142,8 @@ const styles = StyleSheet.create({
   title:{
     fontSize: 20,
     fontFamily: 'Mulish-Bold',
-    color: '#5F2EEA'
+    color: '#5F2EEA',
+    marginRight: 40
   },
   card: {
     backgroundColor: 'white',
@@ -135,6 +175,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Mulish-Regular',
     color: '#A0A3BD',
     marginTop: 20
+  },
+  select: {
+    flex: 1
   }
 })
 

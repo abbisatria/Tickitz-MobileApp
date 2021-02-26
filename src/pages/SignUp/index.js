@@ -38,7 +38,7 @@ class SignUp extends Component {
         <View style={styles.container}>
           <Header title="Sign Up" />
           <View style={styles.form}>
-            <InputText label="Email" placeholder="Write your email" onChange={(email) => this.setState({email})} />
+            <InputText label="Email" placeholder="Write your email" keyboardType="email-address" onChange={(email) => this.setState({email})} />
             <View style={styles.gap} />
             <InputPassword label="Password" placeholder="Write your password" paddingVertical={10} onChange={(password) => this.setState({password})} />
           </View>

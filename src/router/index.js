@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import SignUp from '../pages/SignUp'
 import SignIn from '../pages/SignIn'
 import ForgotPassword from '../pages/ForgotPassword'
+import ResetPassword from '../pages/ResetPassword'
 import Home from '../pages/Home'
 import MovieDetail from '../pages/MovieDetail'
 import Order from '../pages/Order'
@@ -41,6 +42,7 @@ class Router extends Component {
             <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}} />
             <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false}} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: false}} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} options={{headerShown: false}} />
           </>
         )}
       </Stack.Navigator>

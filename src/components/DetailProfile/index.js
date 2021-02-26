@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { Text, StyleSheet, View, ScrollView, TouchableOpacity, Image, ActivityIndicator, Pressable, Modal } from 'react-native'
 import { ProgressBar } from 'react-native-paper'
 import { connect } from 'react-redux'
 import { updateProfile } from '../../redux/actions/auth'
 import { REACT_APP_API_URL as API_URL } from '@env'
-import { launchImageLibrary } from 'react-native-image-picker'
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker'
 import { showMessage } from '../../helpers/showMessage'
 
 import InputText from '../Form/InputText'
@@ -23,9 +23,59 @@ class DetailProfile extends Component {
     fullname: '',
     phoneNumber: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    modalVisible: false
   }
-  addPhoto = () => {
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
+  addPhotoCamera = () => {
+    // try {
+    //   const granted = await PermissionsAndroid.request(
+    //     PermissionsAndroid.PERMISSIONS.CAMERA,
+    //     {
+    //       title: "App Camera Permission",
+    //       message:"App needs access to your camera ",
+    //       buttonNeutral: "Ask Me Later",
+    //       buttonNegative: "Cancel",
+    //       buttonPositive: "OK"
+    //     }
+    //   );
+    //   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //     console.log("Camera permission given");
+    //   } else {
+    //     console.log("Camera permission denied");
+    //   }
+    // } catch (err) {
+    //   console.warn(err);
+    // }
+    // ImagePicker.launchCamera({}, response => console.log(response))
+    launchCamera({
+      quality: 0.5,
+      maxWidth: 300,
+      maxHeight: 300
+    }, async (response) => {
+      console.log('Response = ', response)
+      this.setState({ loading: true })
+      if (response.didCancel) {
+        this.setState({ loading: false, modalVisible: false })
+        showMessage('User cancelled image picker')
+      } else if (response.errorMessage) {
+        this.setState({ loading: false, modalVisible: false })
+        console.log('ImagePicker Error: ', response.errorMessage)
+      } else {
+        this.setState({ loading: false, modalVisible: false })
+        const dataImage = {
+          uri: response.uri,
+          type: response.type,
+          name: response.fileName
+        }
+        await this.props.updateProfile(this.props.auth.token, this.props.auth.user.id, { file: dataImage })
+        showMessage(this.props.auth.message, 'success')
+      }
+    })
+  }
+  addPhotoGallery = () => {
     launchImageLibrary({
       quality: 0.5,
       maxWidth: 300,
@@ -34,13 +84,13 @@ class DetailProfile extends Component {
       console.log('Response = ', response)
       this.setState({ loading: true })
       if (response.didCancel) {
-        this.setState({ loading: false })
+        this.setState({ loading: false, modalVisible: false })
         showMessage('User cancelled image picker')
       } else if (response.errorMessage) {
-        this.setState({ loading: false })
+        this.setState({ loading: false, modalVisible: false })
         console.log('ImagePicker Error: ', response.errorMessage)
       } else {
-        this.setState({ loading: false })
+        this.setState({ loading: false, modalVisible: false })
         const dataImage = {
           uri: response.uri,
           type: response.type,
@@ -81,6 +131,7 @@ class DetailProfile extends Component {
     }
   }
   render() {
+    const { modalVisible } = this.state
     return (
       <ScrollView style={styles.scene} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
@@ -90,11 +141,38 @@ class DetailProfile extends Component {
               <Text style={styles.info}>...</Text>
             </View>
             <View style={styles.rowImage}>
-              <TouchableOpacity onPress={this.addPhoto}>
+              <TouchableOpacity onPress={() => this.setModalVisible(true)}>
                 {this.props.auth.user.image ? <Image source={{uri: `${API_URL}uploads/users/${this.props.auth.user.image}`}} style={styles.image} /> : <Image source={PhotoProfile} style={styles.image} />}
               </TouchableOpacity>
               {this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : (this.props.auth.errorMsg !== '' ? <Text>{this.props.auth.errorMsg}</Text> : null) }
               <Text style={styles.name}>{this.props.firstname ? `${this.props.auth.user.firstname} ${this.props.auth.user.lastname}`: 'No Name'}</Text>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  this.setModalVisible(!modalVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <View style={styles.row}>
+                      <Pressable
+                        style={[styles.button, styles.buttonLink, {marginRight: 10}]}
+                        onPress={() => this.addPhotoCamera()}
+                      >
+                        <Text style={styles.textStyle}>Camera</Text>
+                      </Pressable>
+                      <Pressable
+                        style={[styles.button, styles.buttonLink]}
+                        onPress={() => this.addPhotoGallery()}
+                      >
+                        <Text style={styles.textStyle}>Gallery</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
               <Text style={styles.moviegoers}>Moviegoers</Text>
             </View>
             <View style={styles.line} />
@@ -117,7 +195,7 @@ class DetailProfile extends Component {
             <View style={styles.line} />
             <InputText label="Full Name" value={this.props.firstname && `${this.props.auth.user.firstname} ${this.props.auth.user.lastname}`} placeholder="Type your full name" paddingVertical={12} onChange={(fullname) => this.setState({fullname})} />
             <View style={{height: 24}} />
-            <InputText label="Email" value={this.props.auth.user.email} placeholder="Type your email" paddingVertical={12} onChange={(email) => this.setState({email})} />
+            <InputText label="Email" keyboardType="email-address" value={this.props.auth.user.email} placeholder="Type your email" paddingVertical={12} onChange={(email) => this.setState({email})} />
             <View style={{height: 24}} />
             <InputNumber label="Phone Number" value={this.props.auth.user.phoneNumber} placeholder="Type your phonenumber" onChange={(phoneNumber) => this.setState({phoneNumber})} />
           </View>
@@ -252,6 +330,44 @@ const styles = StyleSheet.create({
   containerFooter: {
     paddingHorizontal: 24,
     backgroundColor: 'white'
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonLink: {
+    backgroundColor: '#5F2EEA',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center'
   }
 })
 

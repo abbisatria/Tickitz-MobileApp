@@ -63,10 +63,36 @@ export const forgotPassword = (email) => {
         type: 'SET_AUTH_MESSAGE',
         payload: ''
       })
-      const results = await http().post('auth/forgotPassword', params)
+      const results = await http().post('auth/forgotPasswordMobile', params)
       dispatch({
         type: 'FORGOT_PASSWORD',
-        payload: results.data.message
+        payload: results.data.results,
+        message: results.data.message
+      })
+    } catch (err) {
+      const { message } = err.response.data
+      dispatch({
+        type: 'SET_AUTH_MESSAGE',
+        payload: message
+      })
+    }
+  }
+}
+
+export const resetPassword = (token, password) => {
+  return async dispatch => {
+    const params = new URLSearchParams()
+    params.append('password', password)
+    try {
+      dispatch({
+        type: 'SET_AUTH_MESSAGE',
+        payload: ''
+      })
+      const results = await http().patch(`auth/resetPassword/${token}`, params)
+      dispatch({
+        type: 'RESET_PASSWORD',
+        payload: results.data.message,
+        tokenResetPassword: ''
       })
     } catch (err) {
       const { message } = err.response.data

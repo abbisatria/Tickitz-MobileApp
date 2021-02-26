@@ -36,9 +36,9 @@ class SignIn extends Component {
         <View style={styles.container}>
           <Header title="Sign In" />
           <View style={styles.form}>
-            <InputText label="Email" placeholder="Write your email" onChange={(email) => this.setState({email})} />
+            <InputText label="Email" placeholder="Write your email" keyboardType="email-address" onChange={(email) => this.setState({email})} />
             <View style={styles.gap} />
-            <InputPassword label="Password" placeholder="Write your password" onChange={(password) => this.setState({password})}  paddingVertical={10} />
+            <InputPassword label="Password" placeholder="Write your password" onChange={(password) => this.setState({password})} paddingVertical={10} />
           </View>
           {this.state.loading ? <ActivityIndicator size="large" color="#000000" /> : <Button text="Sign In" onPress={() => this.login()} />}
           <Footer title="Forgot your password?" textLink="Reset now" onPress={() => this.props.navigation.navigate('ForgotPassword')} />
