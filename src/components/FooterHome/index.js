@@ -1,20 +1,22 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
-import Logo from '../../assets/images/logo.svg'
-import CineOne21 from '../../assets/images/cineone21.svg'
-import EbvId from '../../assets/images/ebv.id.svg'
-import Hiflix from '../../assets/images/hiflix.svg'
-import Facebook from '../../assets/icons/eva-facebook.svg'
-import Instagram from '../../assets/icons/eva-instagram.svg'
-import Twitter from '../../assets/icons/eva-twitter.svg'
-import Youtube from '../../assets/icons/eva-youtube.svg'
+import Logo from '../../assets/images/logo.svg';
+import CineOne21 from '../../assets/images/cineone21.svg';
+import EbvId from '../../assets/images/ebv.id.svg';
+import Hiflix from '../../assets/images/hiflix.svg';
+import Facebook from '../../assets/icons/eva-facebook.svg';
+import Instagram from '../../assets/icons/eva-instagram.svg';
+import Twitter from '../../assets/icons/eva-twitter.svg';
+import Youtube from '../../assets/icons/eva-youtube.svg';
 
 const FooterHome = () => {
   return (
     <View style={styles.footer}>
       <Logo />
-      <Text style={styles.desc}>Stop waiting in line. Buy tickets conveniently, watch movies quietly.</Text>
+      <Text style={styles.desc}>
+        Stop waiting in line. Buy tickets conveniently, watch movies quietly.
+      </Text>
       <Text style={styles.title}>Explore</Text>
       <View style={styles.row}>
         <TouchableOpacity>
@@ -59,49 +61,49 @@ const FooterHome = () => {
       </View>
       <Text style={styles.copyright}>© 2020 Tickitz. All Rights Reserved.</Text>
     </View>
-  )
-}
+  );
+};
 
-export default FooterHome
+export default FooterHome;
 
 const styles = StyleSheet.create({
   footer: {
-    marginTop: 64
+    marginTop: 64,
   },
-  desc : {
-    fontSize: 14, 
+  desc: {
+    fontSize: 14,
     color: '#6E7191',
-    fontFamily: 'Mulish-Regular', 
-    marginTop: 24
+    fontFamily: 'Mulish-Regular',
+    marginTop: 24,
   },
   row: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   rowFollow: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   marginRight: {
-    marginRight: 34
+    marginRight: 34,
   },
   title: {
     fontSize: 16,
     fontFamily: 'Mulish-SemiBold',
-    marginTop: 40, 
-    marginBottom: 12
+    marginTop: 40,
+    marginBottom: 12,
   },
   text: {
-    fontSize: 14,  
+    fontSize: 14,
     color: '#6E7191',
-    fontFamily: 'Mulish-Regular'
+    fontFamily: 'Mulish-Regular',
   },
   copyright: {
     fontSize: 13,
     fontFamily: 'Mulish-Regular',
     color: '#6E7191',
-    marginVertical: 64
-  }
-})
+    marginVertical: 64,
+  },
+});

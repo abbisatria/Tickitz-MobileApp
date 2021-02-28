@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
-import {Picker} from '@react-native-picker/picker'
+import React, {Component} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 
 export default class Select extends Component {
   render() {
@@ -10,17 +10,15 @@ export default class Select extends Component {
         <Picker
           selectedValue={this.props.value}
           onValueChange={this.props.onChange}
-          style={styles.select}
-          >
-          {this.props.label && (<Picker.Item label={this.props.label} />)}
-          {this.props.data && this.props.data.map((item, index) => {
-            return (
-              <Picker.Item key={index} label={item} value={item} />
-            )
-          })}
+          style={styles.select}>
+          {this.props.label && <Picker.Item label={this.props.label} />}
+          {this.props.data &&
+            this.props.data.map((item, index) => {
+              return <Picker.Item key={index} label={item} value={item} />;
+            })}
         </Picker>
       </View>
-    )
+    );
   }
 }
 
@@ -34,10 +32,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Mulish-Regular',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   select: {
-    flex: 1, 
-    marginLeft: 18
-  }
-})
+    flex: 1,
+    marginLeft: 18,
+  },
+});

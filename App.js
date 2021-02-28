@@ -1,29 +1,43 @@
-import React, { Component } from 'react'
-import 'react-native-gesture-handler'
-import { NavigationContainer } from '@react-navigation/native'
-import Router from './src/router'
-import {Provider} from 'react-redux'
-import persistedStore from './src/redux/store'
-import { PersistGate } from 'redux-persist/integration/react'
-import FlashMessage from 'react-native-flash-message'
-import SplashScreen from 'react-native-splash-screen'
+import React, {Component} from 'react';
+import 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
+import Router from './src/router';
+import {Provider} from 'react-redux';
+import persistedStore from './src/redux/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import FlashMessage from 'react-native-flash-message';
+import SplashScreen from 'react-native-splash-screen';
+import PushNotification from 'react-native-push-notification';
+
+PushNotification.createChannel(
+  {
+    channelId: 'general',
+    channelName: 'General Notification',
+    channelDescription: 'A channel to categorise your notifications',
+    playSound: false,
+    soundName: 'default',
+    importance: 4,
+    vibrate: true,
+  },
+  (created) => console.log(`createChannel returned '${created}'`),
+);
 
 class App extends Component {
   componentDidMount() {
-    SplashScreen.hide()
+    SplashScreen.hide();
   }
   render() {
-    const { store, persistor } = persistedStore()
+    const {store, persistor} = persistedStore();
     return (
-      <NavigationContainer>
+      <Provider store={store}>
         <PersistGate persistor={persistor} />
-        <Provider store={store}>
+        <NavigationContainer>
           <Router />
-          <FlashMessage position="top" duration={4000} />
-        </Provider>
-      </NavigationContainer>
-    )
+          <FlashMessage position="top" duration={3000} />
+        </NavigationContainer>
+      </Provider>
+    );
   }
 }
 
-export default App
+export default App;

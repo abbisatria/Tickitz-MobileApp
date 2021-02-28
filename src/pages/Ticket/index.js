@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import moment from 'moment'
-import QRCode from 'react-native-qrcode-svg'
+import React, {Component} from 'react';
+import {Text, StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import moment from 'moment';
+import QRCode from 'react-native-qrcode-svg';
 
-import { connect } from 'react-redux'
+import {connect} from 'react-redux';
 
-import FooterHome from '../../components/FooterHome'
+import FooterHome from '../../components/FooterHome';
 
 class Ticket extends Component {
   render() {
@@ -18,34 +18,51 @@ class Ticket extends Component {
               <QRCode value="http://localhost:3000" />
             </View>
             <View style={styles.rowLine}>
-              <View style={styles.circle}/>
+              <View style={styles.circle} />
               <View style={styles.line} />
-              <View style={styles.circleRight}/>
+              <View style={styles.circleRight} />
             </View>
             <View style={styles.rowDetail}>
               <View style={[styles.col, styles.widthCol]}>
                 <Text style={styles.name}>Movie</Text>
-                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].movie}</Text>
+                <Text style={styles.text}>
+                  {this.props.order.resultsCheckOut[0].movie}
+                </Text>
               </View>
               <View style={styles.col}>
                 <Text style={styles.name}>Category</Text>
-                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].category}</Text>
+                <Text style={styles.text}>
+                  {this.props.order.resultsCheckOut[0].category}
+                </Text>
               </View>
               <View style={[styles.col, styles.widthCol]}>
                 <Text style={styles.name}>Date</Text>
-                <Text style={styles.text}>{moment(this.props.order.resultsCheckOut[0].showtimeDate).format('D MMMM')}</Text>
+                <Text style={styles.text}>
+                  {moment(
+                    this.props.order.resultsCheckOut[0].showtimeDate,
+                  ).format('D MMMM')}
+                </Text>
               </View>
               <View style={styles.col}>
                 <Text style={styles.name}>Time</Text>
-                <Text style={styles.text}>{moment(this.props.order.resultsCheckOut[0].showtime, 'HH:mm:ss').format('hh:mm A')}</Text>
+                <Text style={styles.text}>
+                  {moment(
+                    this.props.order.resultsCheckOut[0].showtime,
+                    'HH:mm:ss',
+                  ).format('hh:mm A')}
+                </Text>
               </View>
               <View style={[styles.col, styles.widthCol]}>
                 <Text style={styles.name}>Count</Text>
-                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].ticketCount} pcs</Text>
+                <Text style={styles.text}>
+                  {this.props.order.resultsCheckOut[0].ticketCount} pcs
+                </Text>
               </View>
               <View style={styles.col}>
                 <Text style={styles.name}>Seats</Text>
-                <Text style={styles.text}>{this.props.order.resultsCheckOut[0].seats}</Text>
+                <Text style={styles.text}>
+                  {this.props.order.resultsCheckOut[0].seats}
+                </Text>
               </View>
             </View>
             <View style={styles.rowTotal}>
@@ -58,13 +75,13 @@ class Ticket extends Component {
           <FooterHome />
         </View>
       </ScrollView>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F5F5F5'
+    backgroundColor: '#F5F5F5',
   },
   card: {
     backgroundColor: 'white',
@@ -72,15 +89,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginVertical: 48,
-    marginHorizontal: 40
+    marginHorizontal: 40,
   },
   row: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   rowLine: {
     position: 'relative',
-    marginBottom: 60
+    marginBottom: 60,
   },
   circle: {
     width: 32,
@@ -90,7 +107,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: -30,
     bottom: -15,
-    zIndex: 1
+    zIndex: 1,
   },
   circleRight: {
     width: 32,
@@ -100,53 +117,53 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: -30,
     bottom: -15,
-    zIndex: 1
+    zIndex: 1,
   },
   line: {
-    flex:1,
+    flex: 1,
     borderBottomWidth: 1,
     borderBottomColor: '#DEDEDE',
     borderStyle: 'dashed',
     borderRadius: 1,
-    marginTop: 40
+    marginTop: 40,
   },
   rowDetail: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   col: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   widthCol: {
-    width: 160
+    width: 160,
   },
   name: {
     fontSize: 12,
     fontFamily: 'Mulish-SemiBold',
-    color: '#AAAAAA'
+    color: '#AAAAAA',
   },
   text: {
     fontSize: 14,
     fontFamily: 'Mulish-SemiBold',
-    color: '#14142B'
+    color: '#14142B',
   },
   rowTotal: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    borderWidth: 1, 
-    borderColor: '#DEDEDE', 
-    paddingHorizontal: 24, 
-    paddingVertical: 10
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#DEDEDE',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
   },
   containerFooter: {
     paddingHorizontal: 24,
-    backgroundColor: 'white'
-  }
-})
+    backgroundColor: 'white',
+  },
+});
 
-const mapStateToProps = state => ({
-  order: state.order
-})
+const mapStateToProps = (state) => ({
+  order: state.order,
+});
 
-export default connect(mapStateToProps)(Ticket)
+export default connect(mapStateToProps)(Ticket);

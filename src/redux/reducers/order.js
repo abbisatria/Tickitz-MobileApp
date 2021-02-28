@@ -4,74 +4,74 @@ const initialState = {
   seatSold: [],
   seatChecked: null,
   orderHistory: null,
-  errorMsg: ''
-}
+  errorMsg: '',
+};
 
 const orderReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ORDER': {
       return {
         ...state,
-        results: action.payload
-      }
+        results: action.payload,
+      };
     }
     case 'CHECKOUT': {
       return {
         ...state,
-        resultsCheckOut: action.payload
-      }
+        resultsCheckOut: action.payload,
+      };
     }
     case 'DETAIL_TICKET': {
       return {
         ...state,
-        resultsCheckOut: action.payload
-      }
+        resultsCheckOut: action.payload,
+      };
     }
     case 'SEAT_SOLD': {
       return {
         ...state,
-        seatSold: action.payload
-      }
+        seatSold: action.payload,
+      };
     }
     case 'SEAT_CHECKED': {
       return {
         ...state,
-        seatChecked: action.payload
-      }
+        seatChecked: action.payload,
+      };
     }
     case 'ORDER_HISTORY': {
       return {
         ...state,
-        orderHistory: action.payload
-      }
+        orderHistory: action.payload,
+      };
     }
     case 'SET_MESSAGE_SEAT_SOLD': {
       return {
         ...state,
         errorMsg: action.payload,
-        seatSold: []
-      }
+        seatSold: [],
+      };
     }
     case 'SET_MESSAGE_ORDER': {
       return {
         ...state,
         errorMsg: action.payload,
-        results: null
-      }
+        results: null,
+      };
     }
     case 'SET_MESSAGE_CHECKOUT': {
       return {
         ...state,
         errorMsg: action.payload,
-        resultsCheckOut: null
-      }
+        resultsCheckOut: null,
+      };
     }
     case 'SET_MESSAGE_HISTORY': {
       return {
         ...state,
         errorMsg: action.payload,
-        orderHistory: null
-      }
+        orderHistory: null,
+      };
     }
     case 'CLEAR_ORDER': {
       return {
@@ -81,15 +81,15 @@ const orderReducer = (state = initialState, action) => {
         seatSold: [],
         seatChecked: null,
         orderHistory: null,
-        errorMsg: ''
-      }
+        errorMsg: '',
+      };
     }
     default: {
       return {
-        ...state
-      }
+        ...state,
+      };
     }
   }
-}
+};
 
-export default orderReducer
+export default orderReducer;

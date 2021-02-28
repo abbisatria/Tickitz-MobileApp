@@ -2,15 +2,17 @@ import React, {Component} from 'react';
 import {Dimensions, StyleSheet, View, Text} from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 
-import DetailProfile from '../../components/DetailProfile';
-import OrderProfile from '../../components/OrderProfile';
+import MovieAdmin from '../../components/MovieAdmin';
+import CinemaAdmin from '../../components/CinemaAdmin';
+import GenreAdmin from '../../components/GenreAdmin';
 
 class Profile extends Component {
   state = {
     index: 0,
     routes: [
-      {key: 'details', title: 'Details'},
-      {key: 'order', title: 'Order'},
+      {key: 'movie', title: 'Movie'},
+      {key: 'cinema', title: 'Cinema'},
+      {key: 'genre', title: 'Genre'},
     ],
   };
 
@@ -27,8 +29,9 @@ class Profile extends Component {
 
   initialLayout = {width: Dimensions.get('window').width};
   renderScene = SceneMap({
-    details: () => <DetailProfile />,
-    order: () => <OrderProfile />,
+    movie: () => <MovieAdmin />,
+    cinema: () => <CinemaAdmin />,
+    genre: () => <GenreAdmin />,
   });
 
   render() {

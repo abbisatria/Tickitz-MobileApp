@@ -3,8 +3,8 @@ const initialState = {
   user: null,
   message: '',
   errorMsg: '',
-  tokenResetPassword: null
-}
+  tokenResetPassword: null,
+};
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -12,38 +12,38 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         token: action.payload,
-        user: action.user
-      }
+        user: action.user,
+      };
     }
     case 'SIGN_UP': {
       return {
         ...state,
-        message: action.payload
-      }
+        message: action.payload,
+      };
     }
     case 'FORGOT_PASSWORD': {
       return {
         ...state,
         tokenResetPassword: action.payload,
-        message: action.message
-      }
+        message: action.message,
+      };
     }
     case 'RESET_PASSWORD': {
       return {
         ...state,
         message: action.payload,
-        tokenResetPassword: action.tokenResetPassword
-      }
+        tokenResetPassword: action.tokenResetPassword,
+      };
     }
     case 'UPDATE_PROFILE': {
       return {
         ...state,
         user: {
           ...state.user,
-          ...action.payload
+          ...action.payload,
         },
-        message: action.message
-      }
+        message: action.message,
+      };
     }
     case 'LOGOUT': {
       return {
@@ -52,21 +52,21 @@ const authReducer = (state = initialState, action) => {
         user: null,
         message: '',
         errorMsg: '',
-        tokenResetPassword: null
-      }
+        tokenResetPassword: null,
+      };
     }
     case 'SET_AUTH_MESSAGE': {
       return {
         ...state,
-        errorMsg: action.payload
-      }
+        errorMsg: action.payload,
+      };
     }
     default: {
       return {
-        ...state
-      }
+        ...state,
+      };
     }
   }
-}
+};
 
-export default authReducer
+export default authReducer;

@@ -4,8 +4,10 @@ const initialState = {
   detailMovie: null,
   pageInfoNowShowing: null,
   pageInfoUpComing: null,
-  errorMsg: ''
-}
+  success: null,
+  results: null,
+  errorMsg: '',
+};
 
 const movieReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -13,34 +15,41 @@ const movieReducer = (state = initialState, action) => {
       return {
         ...state,
         nowShowing: action.payload,
-        pageInfoNowShowing: action.pageInfo
-      }
+        pageInfoNowShowing: action.pageInfo,
+      };
     }
     case 'UP_COMING': {
       return {
         ...state,
         upComing: action.payload,
-        pageInfoUpComing: action.pageInfo
-      }
+        pageInfoUpComing: action.pageInfo,
+      };
     }
     case 'DETAIL_MOVIE': {
       return {
         ...state,
-        detailMovie: action.payload
-      }
+        detailMovie: action.payload,
+      };
+    }
+    case 'CREATE_MOVIE': {
+      return {
+        ...state,
+        results: action.payload,
+        success: action.success,
+      };
     }
     case 'SET_MOVIE_MESSAGE': {
       return {
         ...state,
-        errorMsg: action.payload
-      }
+        errorMsg: action.payload,
+      };
     }
     default: {
       return {
-        ...state
-      }
+        ...state,
+      };
     }
   }
-}
+};
 
-export default movieReducer
+export default movieReducer;
