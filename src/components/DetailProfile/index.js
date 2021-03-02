@@ -16,6 +16,8 @@ import {updateProfile} from '../../redux/actions/auth';
 import {REACT_APP_API_URL as API_URL} from '@env';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {showMessage} from '../../helpers/showMessage';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 
 import InputText from '../Form/InputText';
 import InputPassword from '../Form/InputPassword';
@@ -25,6 +27,21 @@ import FooterHome from '../FooterHome';
 
 import Stars from '../../assets/icons/ic-stars.svg';
 import PhotoProfile from '../../assets/images/profile.jpg';
+
+const validationSchema = Yup.object().shape({
+  fullName: Yup.string()
+    .min(2, '*Full Name must have at least 2 characters')
+    .max(50, '*Full name must be less than 50 characters')
+    .required('*Full name is required'),
+  email: Yup.string()
+    .email('*Must be a valid email address')
+    .max(50, '*Email must be less than 100 characters')
+    .required('*Email is required'),
+  phoneNumber: Yup.string()
+    .min(9, '*Phone number must have at least 9 characters')
+    .max(15, '*Phone number cant be longer than 10 characters')
+    .required('*Phone Number is required'),
+});
 
 class DetailProfile extends Component {
   state = {
@@ -44,22 +61,21 @@ class DetailProfile extends Component {
     //   const granted = await PermissionsAndroid.request(
     //     PermissionsAndroid.PERMISSIONS.CAMERA,
     //     {
-    //       title: "App Camera Permission",
-    //       message:"App needs access to your camera ",
-    //       buttonNeutral: "Ask Me Later",
-    //       buttonNegative: "Cancel",
-    //       buttonPositive: "OK"
-    //     }
+    //       title: 'App Camera Permission',
+    //       message: 'App needs access to your camera ',
+    //       buttonNeutral: 'Ask Me Later',
+    //       buttonNegative: 'Cancel',
+    //       buttonPositive: 'OK',
+    //     },
     //   );
     //   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    //     console.log("Camera permission given");
+    //     console.log('Camera permission given');
     //   } else {
-    //     console.log("Camera permission denied");
+    //     console.log('Camera permission denied');
     //   }
     // } catch (err) {
     //   console.warn(err);
     // }
-    // ImagePicker.launchCamera({}, response => console.log(response))
     this.setState({loading: true, modalVisible: false});
     launchCamera(
       {
@@ -125,42 +141,90 @@ class DetailProfile extends Component {
       },
     );
   };
-  updatePersonalInfo = async () => {
+  updatePersonalInfo = async (values) => {
     const {token, user} = this.props.auth;
     const {
-      password,
-      confirmPassword,
-      fullname,
+      //   password,
+      //   confirmPassword,
+      fullName,
       email,
       phoneNumber,
-    } = this.state;
-    if (password !== confirmPassword) {
-      showMessage('New password and password confirmation do not match');
+    } = values;
+    const splitFullname = fullName.split(' ');
+    if (splitFullname.length > 1) {
+      await this.props.updateProfile(token, user.id, {
+        firstname: splitFullname[0],
+        lastname: splitFullname.splice(1, splitFullname.length).join(' '),
+        email: email,
+        phoneNumber: phoneNumber,
+      });
+      showMessage(this.props.auth.message, 'success');
     } else {
-      const splitFullname = fullname.split(' ');
-      if (splitFullname.length > 1) {
-        await this.props.updateProfile(token, user.id, {
-          firstname: splitFullname[0],
-          lastname: splitFullname.splice(1, splitFullname.length).join(' '),
-          email: email,
-          password: password,
-          phoneNumber: phoneNumber,
-        });
-        showMessage(this.props.auth.message, 'success');
-      } else {
-        await this.props.updateProfile(token, user.id, {
-          firstname: splitFullname[0],
-          lastname: ' ',
-          email: email,
-          password: password,
-          phoneNumber: phoneNumber,
-        });
-        showMessage(this.props.auth.message, 'success');
-      }
+      await this.props.updateProfile(token, user.id, {
+        firstname: splitFullname[0],
+        lastname: ' ',
+        email: email,
+        phoneNumber: phoneNumber,
+      });
+      showMessage(this.props.auth.message, 'success');
     }
+    // if (password !== confirmPassword) {
+    //   showMessage('New password and password confirmation do not match');
+    // } else {
+    //   const splitFullname = fullname.split(' ');
+    //   if (splitFullname.length > 1) {
+    //     await this.props.updateProfile(token, user.id, {
+    //       firstname: splitFullname[0],
+    //       lastname: splitFullname.splice(1, splitFullname.length).join(' '),
+    //       email: email,
+    //       password: password,
+    //       phoneNumber: phoneNumber,
+    //     });
+    //     showMessage(this.props.auth.message, 'success');
+    //   } else {
+    //     await this.props.updateProfile(token, user.id, {
+    //       firstname: splitFullname[0],
+    //       lastname: ' ',
+    //       email: email,
+    //       password: password,
+    //       phoneNumber: phoneNumber,
+    //     });
+    //     showMessage(this.props.auth.message, 'success');
+    //   }
+    // }
+  };
+  passwordValidation(values) {
+    const errors = {};
+    const {password, confirmPassword} = values;
+
+    if (!password) {
+      errors.msg = 'New Password Required';
+    } else if (!confirmPassword) {
+      errors.msg = 'Repeat your new password';
+    } else if (password.length < 8 || confirmPassword.length < 8) {
+      errors.msg = 'Password have at least 8 characters';
+    } else if (password !== confirmPassword) {
+      errors.msg = 'New password & repeat password not same';
+    }
+    return errors;
+  }
+  updatePassword = async (values) => {
+    const {token, user} = this.props.auth;
+    const {password} = values;
+    await this.props.updateProfile(token, user.id, {
+      password: password,
+    });
+    showMessage(this.props.auth.message, 'success');
   };
   render() {
     const {modalVisible} = this.state;
+    const {
+      firstname,
+      lastname,
+      email,
+      phoneNumber,
+      image,
+    } = this.props.auth.user;
     return (
       <ScrollView style={styles.scene} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
@@ -174,7 +238,7 @@ class DetailProfile extends Component {
                 {this.props.auth.user.image ? (
                   <Image
                     source={{
-                      uri: `${API_URL}uploads/users/${this.props.auth.user.image}`,
+                      uri: `${API_URL}uploads/users/${image}`,
                     }}
                     style={styles.image}
                   />
@@ -188,9 +252,7 @@ class DetailProfile extends Component {
                 <Text>{this.props.auth.errorMsg}</Text>
               ) : null}
               <Text style={styles.name}>
-                {this.props.auth.user.firstname
-                  ? `${this.props.auth.user.firstname} ${this.props.auth.user.lastname}`
-                  : 'No Name'}
+                {firstname ? `${firstname} ${lastname}` : 'No Name'}
               </Text>
               <Modal
                 animationType="slide"
@@ -246,55 +308,104 @@ class DetailProfile extends Component {
           <View style={styles.card}>
             <Text style={styles.detailInfo}>Detail Information</Text>
             <View style={styles.line} />
-            <InputText
-              label="Full Name"
-              value={
-                this.props.auth.user.firstname &&
-                `${this.props.auth.user.firstname} ${this.props.auth.user.lastname}`
-              }
-              placeholder="Type your full name"
-              paddingVertical={12}
-              onChange={(fullname) => this.setState({fullname})}
-            />
-            <View style={styles.gap} />
-            <InputText
-              label="Email"
-              keyboardType="email-address"
-              value={this.props.auth.user.email}
-              placeholder="Type your email"
-              paddingVertical={12}
-              onChange={(email) => this.setState({email})}
-            />
-            <View style={styles.gap} />
-            <InputNumber
-              label="Phone Number"
-              value={this.props.auth.user.phoneNumber}
-              placeholder="Type your phonenumber"
-              onChange={(phoneNumber) => this.setState({phoneNumber})}
-            />
+            <Formik
+              initialValues={{
+                fullName: `${firstname} ${lastname}`,
+                email: email,
+                phoneNumber: phoneNumber,
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values) => this.updatePersonalInfo(values)}>
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+              }) => (
+                <View>
+                  <InputText
+                    label="Full Name"
+                    value={values.fullName}
+                    placeholder="Type your full name"
+                    paddingVertical={12}
+                    onChange={handleChange('fullName')}
+                    onBlur={handleBlur('fullName')}
+                  />
+                  {errors.fullName && touched.fullName ? (
+                    <Text style={styles.textError}>{errors.fullName}</Text>
+                  ) : null}
+                  <View style={styles.gap} />
+                  <InputText
+                    label="Email"
+                    keyboardType="email-address"
+                    value={values.email}
+                    placeholder="Type your email"
+                    paddingVertical={12}
+                    onChange={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                  />
+                  {errors.email && touched.email ? (
+                    <Text style={styles.textError}>{errors.email}</Text>
+                  ) : null}
+                  <View style={styles.gap} />
+                  <InputNumber
+                    label="Phone Number"
+                    value={values.phoneNumber}
+                    placeholder="Type your phonenumber"
+                    onChange={handleChange('phoneNumber')}
+                    onBlur={handleBlur('phoneNumber')}
+                  />
+                  {errors.phoneNumber && touched.phoneNumber ? (
+                    <Text style={styles.textError}>{errors.phoneNumber}</Text>
+                  ) : null}
+                  <View style={styles.gap} />
+                  <Button text="Update changes" onPress={handleSubmit} />
+                </View>
+              )}
+            </Formik>
           </View>
           <View style={styles.card}>
             <Text style={styles.detailInfo}>Account and Privacy</Text>
             <View style={styles.line} />
-            <InputPassword
-              label="New Password"
-              placeholder="New password"
-              paddingVertical={1}
-              onChange={(password) => this.setState({password})}
-            />
-            <View style={styles.gap} />
-            <InputPassword
-              label="Confirm"
-              placeholder="Confirm password"
-              paddingVertical={1}
-              onChange={(confirmPassword) => this.setState({confirmPassword})}
-            />
-          </View>
-          <View style={styles.buttonChange}>
-            <Button
-              text="Update changes"
-              onPress={() => this.updatePersonalInfo()}
-            />
+            <Formik
+              initialValues={{
+                password: '',
+                confirmPassword: '',
+              }}
+              validate={(values) => this.passwordValidation(values)}
+              onSubmit={(values, {resetForm}) => {
+                this.updatePassword(values);
+                resetForm();
+              }}>
+              {({handleChange, handleBlur, handleSubmit, values, errors}) => (
+                <View>
+                  <InputPassword
+                    label="New Password"
+                    placeholder="New password"
+                    value={values.password}
+                    paddingVertical={1}
+                    onChange={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                  />
+                  <View style={styles.gap} />
+                  <InputPassword
+                    label="Confirm Password"
+                    placeholder="Confirm password"
+                    value={values.confirmPassword}
+                    paddingVertical={1}
+                    onChange={handleChange('confirmPassword')}
+                    onBlur={handleBlur('confirmPassword')}
+                  />
+                  {errors.msg ? (
+                    <Text style={styles.textError}>{errors.msg}</Text>
+                  ) : null}
+                  <View style={styles.gap} />
+                  <Button text="Update changes" onPress={handleSubmit} />
+                </View>
+              )}
+            </Formik>
           </View>
         </View>
         <View style={styles.containerFooter}>
@@ -311,6 +422,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 24,
+    paddingBottom: 32,
   },
   card: {
     marginTop: 32,
@@ -411,9 +523,6 @@ const styles = StyleSheet.create({
     color: '#14142B',
     marginBottom: 8,
   },
-  buttonChange: {
-    marginVertical: 50,
-  },
   containerFooter: {
     paddingHorizontal: 24,
     backgroundColor: 'white',
@@ -465,6 +574,11 @@ const styles = StyleSheet.create({
   },
   marginRight: {
     marginRight: 10,
+  },
+  textError: {
+    fontFamily: 'Mulish-Regular',
+    fontSize: 12,
+    color: 'red',
   },
 });
 

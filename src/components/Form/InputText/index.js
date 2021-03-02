@@ -11,6 +11,7 @@ const InputText = ({
   keyboardType,
   multiline,
   numberOfLines,
+  onBlur,
 }) => {
   return (
     <View>
@@ -23,6 +24,7 @@ const InputText = ({
         defaultValue={value}
         onChangeText={onChange}
         keyboardType={keyboardType}
+        onBlur={onBlur}
       />
     </View>
   );

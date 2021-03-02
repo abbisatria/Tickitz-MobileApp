@@ -162,7 +162,7 @@ class MovieAdmin extends Component {
       await this.props.createShowtime(
         token,
         this.props.movie.results.id,
-        '2021-02-28',
+        moment(date).format('YYYY-MM-DD'),
         selectCinema,
         selectTime,
       );

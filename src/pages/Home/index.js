@@ -70,11 +70,23 @@ class Home extends Component {
         month: 'August',
       },
     ],
+    nowShowingList: [],
+    page: 1,
   };
   async componentDidMount() {
     await this.props.nowShowing();
     await this.props.upComing();
+    this.setState({nowShowingList: this.props.movie.nowShowing});
   }
+  next = async () => {
+    if (this.state.page !== this.props.movie.pageInfoNowShowing.totalPage) {
+      const {nowShowingList: oldNowShowingList, page} = this.state;
+      await this.props.nowShowing(null, page + 1);
+      const nowShowingList = this.props.movie.nowShowing;
+      const newData = [...oldNowShowingList, ...nowShowingList];
+      this.setState({nowShowingList: newData, page: page + 1});
+    }
+  };
   detailMovie = async (id) => {
     await this.props.detailMovie(id);
     this.props.navigation.navigate('Details');
@@ -100,7 +112,7 @@ class Home extends Component {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.slide}
-              data={this.props.movie.nowShowing}
+              data={this.state.nowShowingList}
               renderItem={({item}) => (
                 <NowShowing
                   data={item}
@@ -108,6 +120,8 @@ class Home extends Component {
                 />
               )}
               keyExtractor={(item) => String(item.id)}
+              onEndReached={this.next}
+              onEndReachedThreshold={0.5}
             />
           </View>
           <View>

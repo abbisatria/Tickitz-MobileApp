@@ -88,7 +88,7 @@ class ViewAllMovie extends Component {
     if (sort !== '') {
       if (order === 'ASC') {
         this.setState({loading: true});
-        await this.props.nowShowing(null, null, null, sort, order);
+        await this.props.nowShowing(null, null, null, sort, 'DESC');
         this.setState({
           loading: false,
           nowShowingList: this.props.movie.nowShowing,
@@ -97,7 +97,7 @@ class ViewAllMovie extends Component {
         });
       } else {
         this.setState({loading: true});
-        await this.props.nowShowing(null, null, null, sort, order);
+        await this.props.nowShowing(null, null, null, sort, 'ASC');
         this.setState({
           loading: false,
           nowShowingList: this.props.movie.nowShowing,
@@ -113,6 +113,16 @@ class ViewAllMovie extends Component {
     await this.props.detailMovie(id);
     this.props.navigation.navigate('Details');
   };
+  sort = async (value) => {
+    this.setState({sort: value, loading: true});
+    const {order} = this.state;
+    await this.props.nowShowing(null, null, null, value, order);
+    this.setState({
+      loading: false,
+      nowShowingList: this.props.movie.nowShowing,
+      page: 1,
+    });
+  };
   render() {
     return (
       <View style={styles.parent}>
@@ -122,7 +132,7 @@ class ViewAllMovie extends Component {
             <View style={styles.select}>
               <Picker
                 selectedValue={this.state.sort}
-                onValueChange={(itemValue) => this.setState({sort: itemValue})}>
+                onValueChange={(itemValue) => this.sort(itemValue)}>
                 <Picker.Item label="Sort" />
                 <Picker.Item label="Movie" value="name" />
                 <Picker.Item label="Release" value="releaseDate" />

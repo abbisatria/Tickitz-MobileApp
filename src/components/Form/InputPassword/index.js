@@ -28,6 +28,8 @@ class InputPassword extends Component {
             placeholder={this.props.placeholder}
             secureTextEntry={isPasswordShown ? false : true}
             onChangeText={this.props.onChange}
+            defaultValue={this.props.value}
+            onBlur={this.props.onBlur}
           />
           <TouchableOpacity onPress={this.togglePasswordVisiblity}>
             <Icon
