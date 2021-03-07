@@ -6,9 +6,13 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
+  Linking,
+  ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {nowShowing, upComing, detailMovie} from '../../redux/actions/movie';
+import http from '../../helpers/http';
+import {showMessage} from '../../helpers/showMessage';
 
 import InputText from '../../components/Form/InputText';
 import Button from '../../components/Button';
@@ -71,12 +75,26 @@ class Home extends Component {
       },
     ],
     nowShowingList: [],
+    upComingList: [],
     page: 1,
+    email: '',
+    message: '',
+    loading: false,
+    loadingMovie: false,
   };
   async componentDidMount() {
+    await Linking.getInitialURL().then((URL) => {
+      if (URL === 'tickitz://SignIn') {
+        this.props.navigation.navigate('SignIn');
+        showMessage('Account has been active', 'success');
+      }
+    });
     await this.props.nowShowing();
     await this.props.upComing();
-    this.setState({nowShowingList: this.props.movie.nowShowing});
+    this.setState({
+      nowShowingList: this.props.movie.nowShowing,
+      upComingList: this.props.movie.upComing,
+    });
   }
   next = async () => {
     if (this.state.page !== this.props.movie.pageInfoNowShowing.totalPage) {
@@ -92,8 +110,42 @@ class Home extends Component {
     this.props.navigation.navigate('Details');
   };
   monthUpComing = async (value) => {
+    this.setState({loadingMovie: true});
     await this.props.upComing(value);
-    this.setState({selectMonth: value});
+    if (this.props.movie.upComing.length > 0) {
+      this.setState({
+        selectMonth: value,
+        upComingList: this.props.movie.upComing,
+        message: '',
+        loadingMovie: false,
+      });
+    } else {
+      this.setState({
+        selectMonth: value,
+        message: 'Movie Not Found',
+        loadingMovie: false,
+      });
+    }
+  };
+  moviegoers = async () => {
+    this.setState({loading: true});
+    const {email} = this.state;
+    if (email !== '') {
+      const params = new URLSearchParams();
+      params.append('email', email);
+      try {
+        const results = await http().post('users/moviegoers', params);
+        showMessage(results.data.message, 'success');
+        this.setState({loading: false});
+      } catch (err) {
+        const {message} = err.response.data;
+        showMessage(message);
+        this.setState({loading: false});
+      }
+    } else {
+      showMessage('Email is required');
+      this.setState({loading: false});
+    }
   };
   render() {
     return (
@@ -166,19 +218,25 @@ class Home extends Component {
               )}
               keyExtractor={(item) => String(item.id)}
             />
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.slide}
-              data={this.props.movie.upComing}
-              renderItem={({item}) => (
-                <UpComing
-                  data={item}
-                  onPress={() => this.detailMovie(item.id)}
-                />
-              )}
-              keyExtractor={(item) => String(item.id)}
-            />
+            {this.state.loadingMovie ? (
+              <ActivityIndicator size="large" color="#000000" />
+            ) : this.state.message === '' ? (
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.slide}
+                data={this.state.upComingList}
+                renderItem={({item}) => (
+                  <UpComing
+                    data={item}
+                    onPress={() => this.detailMovie(item.id)}
+                  />
+                )}
+                keyExtractor={(item) => String(item.id)}
+              />
+            ) : (
+              <Text style={styles.message}>{this.state.message}</Text>
+            )}
           </View>
           <View style={styles.moviegoers}>
             <Text style={styles.moviegoersText}>Be the vanguard of the</Text>
@@ -186,9 +244,14 @@ class Home extends Component {
             <InputText
               placeholder="Type your email"
               keyboardType="email-address"
+              onChange={(email) => this.setState({email})}
             />
             <View style={styles.gap} />
-            <Button text="Join now" />
+            {this.state.loading ? (
+              <ActivityIndicator size="large" color="#000000" />
+            ) : (
+              <Button text="Join now" onPress={() => this.moviegoers()} />
+            )}
             <Text style={styles.moviegoersDesc}>
               By joining you as a Tickitz member, we will always send you the
               latest updates via email .
@@ -280,6 +343,12 @@ const styles = StyleSheet.create({
   },
   colorUpComing: {
     color: 'black',
+  },
+  message: {
+    fontSize: 20,
+    fontFamily: 'Mulish-Bold',
+    color: '#A0A3BD',
+    textAlign: 'center',
   },
 });
 

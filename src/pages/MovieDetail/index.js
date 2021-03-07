@@ -17,6 +17,7 @@ import Select from '../../components/Form/Select';
 
 import Calendar from '../../assets/icons/ic-calendar.svg';
 import Location from '../../assets/icons/ic-location.svg';
+import {showMessage} from '../../helpers/showMessage';
 
 class MovieDetail extends Component {
   state = {
@@ -49,9 +50,16 @@ class MovieDetail extends Component {
 
   bookNow = async (showtimesId) => {
     this.setState({loading: true});
-    await this.props.order(showtimesId);
-    this.setState({loading: false});
-    this.props.navigation.navigate('Order');
+    if (this.props.auth.token) {
+      await this.props.order(showtimesId);
+      this.setState({loading: false});
+      this.props.navigation.navigate('Order');
+    } else {
+      showMessage(
+        'Please sign up or sign in first before making a transaction',
+      );
+      this.props.navigation.navigate('SignUp');
+    }
   };
 
   async componentDidMount() {
@@ -280,6 +288,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   movie: state.movie,
   showtime: state.showtime,
 });

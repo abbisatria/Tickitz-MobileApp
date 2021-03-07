@@ -48,6 +48,8 @@ export default class Showtime extends Component {
             text="Book Now"
             padding={15}
             onPress={() => this.props.book(this.state.time)}
+            disabled={this.state.time !== '' ? false : true}
+            color={this.state.time !== '' ? '#5F2EEA' : '#D8CCFA'}
           />
           <Button
             text="Add to cart"

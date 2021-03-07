@@ -228,7 +228,9 @@ class ViewAllUpComing extends Component {
             onRefresh={this.refresh}
           />
         ) : (
-          <Text>{this.state.message}</Text>
+          <View style={styles.rowMessage}>
+            <Text style={styles.message}>{this.state.message}</Text>
+          </View>
         )}
       </View>
     );
@@ -318,6 +320,16 @@ const styles = StyleSheet.create({
   },
   slide: {
     marginTop: 10,
+  },
+  rowMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  message: {
+    fontSize: 20,
+    fontFamily: 'Mulish-Bold',
+    color: '#A0A3BD',
   },
 });
 

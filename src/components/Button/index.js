@@ -9,9 +9,10 @@ const Button = ({
   textColor = 'white',
   padding = 20,
   onPress,
+  disabled,
 }) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.7} onPress={onPress} disabled={disabled}>
       <View style={styles.container(color, borderColor, borderWidth, padding)}>
         <Text style={styles.text(textColor)}>{text}</Text>
       </View>

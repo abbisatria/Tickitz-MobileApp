@@ -21,7 +21,12 @@ class Navbar extends Component {
   signOut = async () => {
     await this.props.clearOrder();
     await this.props.logout();
+    this.setState({headerShown: false});
     this.props.navigation.reset({index: 0, routes: [{name: 'SignIn'}]});
+  };
+  signUp = () => {
+    this.setState({headerShown: false});
+    this.props.navigation.navigate('SignUp');
   };
   render() {
     return (
@@ -34,7 +39,8 @@ class Navbar extends Component {
             <Logo />
           </TouchableOpacity>
           {this.props.auth.token ? (
-            this.props.auth.user.image === null ? (
+            this.props.auth.user.image === null ||
+            this.props.auth.user.image === 'null' ? (
               <TouchableOpacity onPress={() => this.show()}>
                 <Image source={Profile} style={styles.profile} />
               </TouchableOpacity>
@@ -56,13 +62,46 @@ class Navbar extends Component {
         </View>
         {this.state.headerShown && (
           <View style={styles.menu}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Profile')}>
-              <Text style={styles.textMenu}>Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.signOut()}>
-              <Button text="Sign Out" padding={5} />
-            </TouchableOpacity>
+            {this.props.auth.token ? (
+              <>
+                <View style={styles.line} />
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({headerShown: false});
+                    this.props.navigation.navigate('Profile');
+                  }}>
+                  <Text style={styles.textMenu}>Profile</Text>
+                </TouchableOpacity>
+                <View style={styles.line} />
+                {this.props.auth.user.role === 1 && (
+                  <>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setState({headerShown: false});
+                        this.props.navigation.navigate('Admin');
+                      }}>
+                      <Text style={styles.textMenu}>Dashboard</Text>
+                    </TouchableOpacity>
+                    <View style={styles.line} />
+                  </>
+                )}
+                <View style={styles.gap} />
+                <TouchableOpacity
+                  onPress={() => this.signOut()}
+                  style={styles.button}>
+                  <Button text="Sign Out" padding={5} />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                onPress={() => this.signUp()}
+                style={styles.button}>
+                <Button text="Sign Up" padding={5} />
+              </TouchableOpacity>
+            )}
+            <Text style={styles.copyRight}>
+              © 2020 Tickitz. All Rights Reserved.
+            </Text>
           </View>
         )}
       </View>
@@ -101,13 +140,33 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'white',
     width: '100%',
-    bottom: -90,
-    paddingHorizontal: 24,
+    top: 60,
     paddingVertical: 15,
+    elevation: 1,
   },
   textMenu: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'Mulish-SemiBold',
+    marginTop: 10,
+    textAlign: 'center',
+    color: '#14142B',
     marginBottom: 10,
+  },
+  gap: {
+    height: 20,
+  },
+  copyRight: {
+    fontSize: 13,
+    fontFamily: 'Mulish-Regular',
+    color: '#6E7191',
+    textAlign: 'center',
+    marginTop: 30,
+  },
+  button: {
+    marginHorizontal: 24,
+  },
+  line: {
+    height: 1,
+    backgroundColor: '#DEDEDE',
   },
 });

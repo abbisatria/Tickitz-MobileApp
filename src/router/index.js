@@ -14,7 +14,6 @@ import Profile from '../pages/Profile';
 import ViewAllMovie from '../pages/ViewAllMovie';
 import ViewAllUpComing from '../pages/ViewAllUpComing';
 import Admin from '../pages/Admin';
-import SplashScreen from '../pages/SplashScreen';
 import Navbar from '../components/Navbar';
 
 const Stack = createStackNavigator();
@@ -24,11 +23,7 @@ class Router extends Component {
     return (
       <Stack.Navigator
         screenOptions={{header: (props) => <Navbar {...props} />}}>
-        <Stack.Screen
-          name="SplashScreen"
-          component={SplashScreen}
-          options={{headerShown: false}}
-        />
+        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen
           name="SignUp"
           component={SignUp}
@@ -50,7 +45,6 @@ class Router extends Component {
           options={{headerShown: false}}
         />
         <Stack.Screen name="Admin" component={Admin} />
-        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Details" component={MovieDetail} />
         <Stack.Screen name="Order" component={Order} />
         <Stack.Screen name="Payment" component={Payment} />

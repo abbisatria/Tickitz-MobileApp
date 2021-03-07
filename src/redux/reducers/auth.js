@@ -45,6 +45,16 @@ const authReducer = (state = initialState, action) => {
         message: action.message,
       };
     }
+    case 'DELETE_PHOTO': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+        message: action.message,
+      };
+    }
     case 'LOGOUT': {
       return {
         ...state,

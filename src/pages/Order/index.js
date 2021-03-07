@@ -151,7 +151,12 @@ class Order extends Component {
             {this.state.loading ? (
               <ActivityIndicator size="large" color="#000000" />
             ) : (
-              <Button text="Checkout now" onPress={() => this.checkOut()} />
+              <Button
+                text="Checkout now"
+                onPress={() => this.checkOut()}
+                disabled={this.state.seat.length > 0 ? false : true}
+                color={this.state.seat.length > 0 ? '#5F2EEA' : '#D8CCFA'}
+              />
             )}
           </View>
           <View style={styles.containerFooter}>

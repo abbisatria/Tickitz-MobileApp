@@ -140,9 +140,9 @@ class ViewAllMovie extends Component {
             </View>
             <TouchableOpacity onPress={this.sortBy}>
               {this.state.order === 'ASC' ? (
-                <Icon size={15} name="arrow-down" />
-              ) : (
                 <Icon size={15} name="arrow-up" />
+              ) : (
+                <Icon size={15} name="arrow-down" />
               )}
             </TouchableOpacity>
           </View>
@@ -193,7 +193,9 @@ class ViewAllMovie extends Component {
             onEndReachedThreshold={0.5}
           />
         ) : (
-          <Text>{this.state.message}</Text>
+          <View style={styles.rowMessage}>
+            <Text style={styles.message}>{this.state.message}</Text>
+          </View>
         )}
       </View>
     );
@@ -267,6 +269,16 @@ const styles = StyleSheet.create({
   },
   select: {
     flex: 1,
+  },
+  rowMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  message: {
+    fontSize: 20,
+    fontFamily: 'Mulish-Bold',
+    color: '#A0A3BD',
   },
 });
 

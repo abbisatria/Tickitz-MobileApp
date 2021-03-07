@@ -11,17 +11,34 @@ import {connect} from 'react-redux';
 import {createCinema} from '../../redux/actions/cinema';
 import {showMessage} from '../../helpers/showMessage';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 
 import InputText from '../Form/InputText';
 import Button from '../Button';
 
+const validationSchema = Yup.object().shape({
+  cinemaName: Yup.string()
+    .min(2, '*Cinema name must have at least 2 characters')
+    .max(50, '*Cinema name must be less than 50 characters')
+    .required('*Cinema name is required'),
+  location: Yup.string()
+    .min(2, '*Location must have at least 2 characters')
+    .max(50, '*Location must be less than 50 characters')
+    .required('*Location is required'),
+  price: Yup.string()
+    .min(2, '*Price must have at least 2 characters')
+    .max(10, '*Price cant be longer than 10 characters')
+    .required('*Price is required'),
+  address: Yup.string()
+    .min(2, '*Address must have at least 2 characters')
+    .max(100, '*Address cant be longer than 100 characters')
+    .required('*Address is required'),
+});
+
 class CinemaAdmin extends Component {
   state = {
     dataImage: null,
-    cinemaName: '',
-    location: '',
-    price: '',
-    address: '',
     image: '',
   };
   addPhotoGallery = () => {
@@ -47,8 +64,9 @@ class CinemaAdmin extends Component {
       },
     );
   };
-  submit = async () => {
-    const {cinemaName, location, dataImage, price, address} = this.state;
+  submit = async (values) => {
+    const {cinemaName, location, price, address} = values;
+    const {dataImage} = this.state;
     await this.props.createCinema(
       this.props.auth.token,
       cinemaName,
@@ -57,10 +75,11 @@ class CinemaAdmin extends Component {
       price,
       address,
     );
-    if (this.props.cinema.success === true) {
+    if (this.props.cinema.errorMsg === '') {
+      this.setState({image: ''});
       showMessage('Create Cinema successfully', 'success');
     } else {
-      showMessage('Failed Create Cinema');
+      showMessage(this.props.cinema.errorMsg);
     }
   };
   render() {
@@ -82,44 +101,94 @@ class CinemaAdmin extends Component {
               )}
             </View>
           </TouchableOpacity>
-          <View style={styles.gap}>
-            <InputText
-              label="Cinema Name"
-              placeholder="Type your cinema name"
-              paddingVertical={10}
-              onChange={(cinemaName) => this.setState({cinemaName})}
-            />
-          </View>
-          <View style={styles.gap}>
-            <InputText
-              label="Location"
-              placeholder="Type your location"
-              paddingVertical={10}
-              onChange={(location) => this.setState({location})}
-            />
-          </View>
-          <View style={styles.gap}>
-            <InputText
-              label="Price"
-              placeholder="Type your price"
-              paddingVertical={10}
-              keyboardType="numeric"
-              onChange={(price) => this.setState({price})}
-            />
-          </View>
-          <View style={styles.gap}>
-            <InputText
-              multiline={true}
-              numberOfLines={4}
-              label="Address"
-              placeholder="Type your location"
-              paddingVertical={10}
-              onChange={(address) => this.setState({address})}
-            />
-          </View>
-          <View style={styles.gap}>
-            <Button text="Save" padding={15} onPress={() => this.submit()} />
-          </View>
+          <Formik
+            initialValues={{
+              cinemaName: '',
+              location: '',
+              price: '',
+              address: '',
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values, {resetForm}) => {
+              this.submit(values);
+              resetForm();
+            }}>
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              errors,
+              values,
+              isValid,
+              touched,
+            }) => (
+              <View>
+                <View style={styles.gap}>
+                  <InputText
+                    label="Cinema Name"
+                    placeholder="Type your cinema name"
+                    paddingVertical={10}
+                    onChange={handleChange('cinemaName')}
+                    onBlur={handleBlur('cinemaName')}
+                    value={values.cinemaName}
+                  />
+                  {errors.cinemaName && touched.cinemaName ? (
+                    <Text style={styles.textError}>{errors.cinemaName}</Text>
+                  ) : null}
+                </View>
+                <View style={styles.gap}>
+                  <InputText
+                    label="Location"
+                    placeholder="Type your location"
+                    paddingVertical={10}
+                    onChange={handleChange('location')}
+                    onBlur={handleBlur('location')}
+                    value={values.location}
+                  />
+                  {errors.location && touched.location ? (
+                    <Text style={styles.textError}>{errors.location}</Text>
+                  ) : null}
+                </View>
+                <View style={styles.gap}>
+                  <InputText
+                    label="Price"
+                    placeholder="Type your price"
+                    paddingVertical={10}
+                    keyboardType="numeric"
+                    onChange={handleChange('price')}
+                    onBlur={handleBlur('price')}
+                    value={values.price}
+                  />
+                  {errors.price && touched.price ? (
+                    <Text style={styles.textError}>{errors.price}</Text>
+                  ) : null}
+                </View>
+                <View style={styles.gap}>
+                  <InputText
+                    multiline={true}
+                    numberOfLines={4}
+                    label="Address"
+                    placeholder="Type your location"
+                    paddingVertical={10}
+                    onChange={handleChange('address')}
+                    onBlur={handleBlur('address')}
+                    value={values.address}
+                  />
+                  {errors.address && touched.address ? (
+                    <Text style={styles.textError}>{errors.address}</Text>
+                  ) : null}
+                </View>
+                <View style={styles.gap}>
+                  <Button
+                    text="Save"
+                    padding={15}
+                    color={!isValid ? '#D8CCFA' : '#5F2EEA'}
+                    onPress={!isValid ? null : handleSubmit}
+                  />
+                </View>
+              </View>
+            )}
+          </Formik>
         </View>
       </ScrollView>
     );
@@ -161,6 +230,11 @@ const styles = StyleSheet.create({
   },
   gap: {
     marginTop: 15,
+  },
+  textError: {
+    fontFamily: 'Mulish-Regular',
+    fontSize: 12,
+    color: 'red',
   },
 });
 

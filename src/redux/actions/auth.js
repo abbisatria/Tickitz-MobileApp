@@ -149,6 +149,29 @@ export const updateProfile = (token, id, data) => {
   };
 };
 
+export const deletePhoto = (token, id) => {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: 'SET_AUTH_MESSAGE',
+        payload: '',
+      });
+      const results = await http(token).patch(`users/deletePhotoProfile/${id}`);
+      dispatch({
+        type: 'DELETE_PHOTO',
+        payload: results.data.results,
+        message: results.data.message,
+      });
+    } catch (err) {
+      const {message} = err.response.data;
+      dispatch({
+        type: 'SET_AUTH_MESSAGE',
+        payload: message,
+      });
+    }
+  };
+};
+
 export const logout = () => ({
   type: 'LOGOUT',
 });
