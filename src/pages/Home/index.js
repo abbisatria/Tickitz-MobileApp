@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-  Linking,
   ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -83,12 +82,6 @@ class Home extends Component {
     loadingMovie: false,
   };
   async componentDidMount() {
-    await Linking.getInitialURL().then((URL) => {
-      if (URL === 'tickitz://SignIn') {
-        this.props.navigation.navigate('SignIn');
-        showMessage('Account has been active', 'success');
-      }
-    });
     await this.props.nowShowing();
     await this.props.upComing();
     this.setState({

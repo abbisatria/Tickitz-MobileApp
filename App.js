@@ -8,6 +8,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import FlashMessage from 'react-native-flash-message';
 import SplashScreen from 'react-native-splash-screen';
 import PushNotification from 'react-native-push-notification';
+import Linking from './src/router/Linking';
 
 PushNotification.createChannel(
   {
@@ -31,7 +32,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor} />
-        <NavigationContainer>
+        <NavigationContainer linking={Linking}>
           <Router />
           <FlashMessage position="top" duration={3000} />
         </NavigationContainer>

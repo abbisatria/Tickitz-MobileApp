@@ -1,59 +1,63 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import {Text, StyleSheet, View, Image, FlatList} from 'react-native';
 import {connect} from 'react-redux';
-import {orderHistory} from '../../redux/actions/order';
+import {orderHistory, detailTicket} from '../../redux/actions/order';
 import {REACT_APP_API_URL as API_URL} from '@env';
 import moment from 'moment';
 import Button from '../Button';
 import FooterHome from '../FooterHome';
+import {useNavigation} from '@react-navigation/native';
 
-class OrderProfile extends Component {
-  async componentDidMount() {
-    await this.props.orderHistory(
-      this.props.auth.token,
-      this.props.auth.user.id,
-    );
-  }
-  render() {
-    console.log(this.props.order.orderHistory);
-    return (
-      <View style={styles.scene}>
-        {this.props.order.orderHistory !== null ? (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={this.props.order.orderHistory}
-            keyExtractor={(item) => String(item.id)}
-            ListFooterComponent={() => (
-              <View style={styles.containerFooter}>
-                <FooterHome />
-              </View>
-            )}
-            renderItem={({item}) => (
-              <View style={styles.card}>
-                <Image
-                  source={{uri: `${API_URL}uploads/cinemas/${item.image}`}}
-                  style={styles.imageCinema}
-                />
-                <Text style={styles.date}>
-                  {moment(item.createdAt).format('dddd, D MMMM YYYY - hh:mm A')}
-                </Text>
-                <Text style={styles.movie}>{item.movie}</Text>
-                <View style={styles.line} />
-                <Button
-                  text="Ticket in active"
-                  textColor="white"
-                  color="#00BA88"
-                  padding={10}
-                />
-              </View>
-            )}
-          />
-        ) : (
-          <Text>No Order</Text>
-        )}
-      </View>
-    );
-  }
+function OrderProfile(props) {
+  const fetchData = async () => {
+    await props.orderHistory(props.auth.token, props.auth.user.id);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const navigation = useNavigation();
+  const ticketDetail = async (id) => {
+    await props.detailTicket(props.auth.token, id);
+    navigation.navigate('Ticket');
+  };
+  return (
+    <View style={styles.scene}>
+      {props.order.orderHistory !== null ? (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={props.order.orderHistory}
+          keyExtractor={(item) => String(item.id)}
+          ListFooterComponent={() => (
+            <View style={styles.containerFooter}>
+              <FooterHome />
+            </View>
+          )}
+          renderItem={({item}) => (
+            <View style={styles.card}>
+              <Image
+                source={{uri: `${API_URL}uploads/cinemas/${item.image}`}}
+                style={styles.imageCinema}
+              />
+              <Text style={styles.date}>
+                {moment(item.createdAt).format('dddd, D MMMM YYYY - hh:mm A')}
+              </Text>
+              <Text style={styles.movie}>{item.movie}</Text>
+              <View style={styles.line} />
+              <Button
+                text="Ticket in active"
+                textColor="white"
+                color="#00BA88"
+                padding={10}
+                onPress={() => ticketDetail(item.id)}
+              />
+            </View>
+          )}
+        />
+      ) : (
+        <Text>No Order</Text>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -102,6 +106,6 @@ const mapStateToProps = (state) => ({
   order: state.order,
 });
 
-const mapDispatchToProps = {orderHistory};
+const mapDispatchToProps = {orderHistory, detailTicket};
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderProfile);

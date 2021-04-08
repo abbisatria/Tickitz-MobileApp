@@ -1,8 +1,16 @@
 import React, {Component} from 'react';
-import {ScrollView, View, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  Text,
+} from 'react-native';
 
 import {connect} from 'react-redux';
 import {signUp} from '../../redux/actions/auth';
+import * as Yup from 'yup';
+import {Formik} from 'formik';
 
 import Header from '../../components/Header';
 import Button from '../../components/Button';
@@ -12,20 +20,28 @@ import Footer from '../../components/Footer';
 
 import {showMessage} from '../../helpers/showMessage';
 
+const validationSchema = Yup.object().shape({
+  password: Yup.string()
+    .min(8, '*Password must have at least 8 characters')
+    .max(50, '*Password must be less than 50 characters')
+    .required('*Password is required'),
+  email: Yup.string()
+    .email('*Must be a valid email address')
+    .max(50, '*Email must be less than 100 characters')
+    .required('*Email is required'),
+});
+
 class SignUp extends Component {
   state = {
-    email: '',
-    password: '',
     loading: false,
   };
-  signUp = async () => {
+  signUp = async (values) => {
     this.setState({loading: true});
-    const {email, password} = this.state;
+    const {email, password} = values;
     await this.props.signUp(email, password);
     if (this.props.auth.message) {
       this.setState({loading: false});
       showMessage(this.props.auth.message, 'success');
-      this.props.navigation.navigate('SignIn');
     } else {
       this.setState({loading: false});
       showMessage(this.props.auth.errorMsg);
@@ -36,26 +52,61 @@ class SignUp extends Component {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Header title="Sign Up" />
-          <View style={styles.form}>
-            <InputText
-              label="Email"
-              placeholder="Write your email"
-              keyboardType="email-address"
-              onChange={(email) => this.setState({email})}
-            />
-            <View style={styles.gap} />
-            <InputPassword
-              label="Password"
-              placeholder="Write your password"
-              paddingVertical={10}
-              onChange={(password) => this.setState({password})}
-            />
-          </View>
-          {this.state.loading ? (
-            <ActivityIndicator size="large" color="#000000" />
-          ) : (
-            <Button text="Sign Up" onPress={() => this.signUp()} />
-          )}
+          <Formik
+            initialValues={{
+              email: '',
+              password: '',
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => this.signUp(values)}>
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              isValid,
+              touched,
+            }) => (
+              <>
+                <View style={styles.form}>
+                  <InputText
+                    label="Email"
+                    placeholder="Write your email"
+                    keyboardType="email-address"
+                    onChange={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    value={values.email}
+                  />
+                  {errors.email && touched.email ? (
+                    <Text style={styles.textError}>{errors.email}</Text>
+                  ) : null}
+                  <View style={styles.gap} />
+                  <InputPassword
+                    label="Password"
+                    placeholder="Write your password"
+                    paddingVertical={10}
+                    onChange={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    value={values.password}
+                  />
+                  {errors.password && touched.password ? (
+                    <Text style={styles.textError}>{errors.password}</Text>
+                  ) : null}
+                </View>
+                {this.state.loading ? (
+                  <ActivityIndicator size="large" color="#000000" />
+                ) : (
+                  <Button
+                    text="Sign Up"
+                    color={!isValid ? '#D8CCFA' : '#5F2EEA'}
+                    onPress={!isValid ? null : handleSubmit}
+                    disabled={!isValid}
+                  />
+                )}
+              </>
+            )}
+          </Formik>
           <Footer
             title="Do you already have an account?"
             textLink="Log in"
@@ -78,6 +129,11 @@ const styles = StyleSheet.create({
   },
   gap: {
     height: 25,
+  },
+  textError: {
+    fontFamily: 'Mulish-Regular',
+    fontSize: 12,
+    color: 'red',
   },
 });
 
